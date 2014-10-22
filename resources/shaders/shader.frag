@@ -23,7 +23,6 @@ const int max_lights = 1;
 in vec3 position;
 in vec2 texCoord;
 in vec3 normal;
-in vec2 screen_pos;
 
 out vec4 frag_color;
 
@@ -32,17 +31,19 @@ uniform vec3 ambient_model;
 uniform point_light light[max_lights];
 
 uniform mat4 modelView;
+uniform mat4 modelViewProjection;
 
 void main()
 {
 	vec3 diffuse_level = vec3(0,0,0);
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
-	vec3 shadow_color = texture2D(mat.shadowmap, vec2((screen_pos.x + 1) * 0.5, (screen_pos.y + 1) * 0.5)).rgb;
+	vec2 screen_pos = (modelViewProjection * vec4(position, 1)).xy;
+	vec3 shadow_color = texture2D(mat.shadowmap, (screen_pos + vec2(1,1)) * 0.5).rgb;
 	
 	for (int i = 0; (i < max_lights) && (light[i].color.a != -1); i++)
 	{
-		if (shadow_color.r > 0 && shadow_color.g > 0 && shadow_color.b > 0)
+		if (false)
 		{
 			vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
 			vec3 light_direction = normalize(light_position - position);
@@ -67,5 +68,7 @@ void main()
 	specular_level *= /*diffuse_texture.rgb */ mat.specular /* mat.shine_strength*/;
 	
 	frag_color.rgb = diffuse_level + specular_level + ambient_level;
+	frag_color.rg = shadow_color;
+	frag_color.b = 0;
 	frag_color.a = diffuse_texture.a * mat.opacity;
 }

@@ -7,7 +7,6 @@ layout(location = 2) in vec3 in_Normal;
 out vec3 position;
 out vec2 texCoord;
 out vec3 normal;
-out vec2 screen_pos;
 
 uniform mat4 modelView;
 uniform mat4 modelViewProjection;
@@ -18,7 +17,5 @@ void main()
 	texCoord = in_TexCoord;
 	normal = (modelView * vec4(in_Normal, 0)).xyz;
 	
-	vec4 position = modelViewProjection * vec4(in_Vertex, 1);
-	screen_pos = position.xy;
-	gl_Position = position;
+	gl_Position = modelViewProjection * vec4(in_Vertex, 1);
 }

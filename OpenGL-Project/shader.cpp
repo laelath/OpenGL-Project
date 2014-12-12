@@ -29,8 +29,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	}
 	else
 	{
-		printf("Impossible to open %s. Are you in the right directory?\n", vertex_file_path);
-		getchar();
+		//printf("Impossible to open %s. Are you in the right directory?\n", vertex_file_path);
+		cout << "Cannot open: " << vertex_file_path;
 		return 0;
 	}
 
@@ -48,7 +48,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
+	//printf("Compiling shader : %s\n", vertex_file_path);
+	cout << "Compiling shader : " << vertex_file_path << endl;
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(VertexShaderID);
@@ -64,7 +65,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	}
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
+	//printf("Compiling shader : %s\n", fragment_file_path);
+	cout << "Compiling shader : " << fragment_file_path << endl;
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(FragmentShaderID);
@@ -80,7 +82,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	}
 	
 	// Link the program
-	printf("Linking program\n");
+	//printf("Linking program\n");
+	cout << "Linking program" << endl;
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
 	glAttachShader(ProgramID, FragmentShaderID);
@@ -93,7 +96,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	{
 		vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
+		//printf("%s\n", &ProgramErrorMessage[0]);
+		cout << &ProgramErrorMessage[0] << endl;
 	}
 
 	glDeleteShader(VertexShaderID);
@@ -150,18 +154,3 @@ void Shader::uniformLight(light l, string name)
 	int cloc = glGetUniformLocation(id, (name + ".color").c_str());
 	glUniform4fv(cloc, 1, &l.color[0]);
 }
-
-/*void BindLight(GLuint id, string name, light l)
-{
-	int ploc = glGetUniformLocation(id, (name + ".position").c_str());
-	glUniform3f(ploc, l.position.x, l.position.y, l.position.z);
-
-	int cloc = glGetUniformLocation(id, (name + ".color").c_str());
-	glUniform4f(cloc, l.color.r, l.color.g, l.color.b,l.color.a);
-}
-
-void BindLight(GLuint id, const char* name, light l)
-{
-	string strname = name;
-	BindLight(id, strname, l);
-}*/

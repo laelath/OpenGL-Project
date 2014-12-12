@@ -65,16 +65,16 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
-	GLuint shadow_sampler;
+	/*GLuint shadow_sampler;
 	glGenSamplers(1, &shadow_sampler);
 	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);*/
 
 	model torus, trashbin;
 	load3DFromFile("../resources/torusball/torusball.obj", &torus);
 	load3DFromFile("../resources/trashcan/trashbin.obj", &trashbin);
 
-	GLuint shadowmap = loadGLpng("../resources/shadowmap.png");
+	//GLuint shadowmap = loadGLpng("../resources/shadowmap.png");
 
 	light lit;
 	lit.position = vec3(-20, 75, 0);
@@ -113,10 +113,10 @@ int main()
 		//int mloc = glGetUniformLocation(programID, "ambient_model");
 		//glUniform3f(mloc, ambient_model.r, ambient_model.g, ambient_model.b);
 
-		glActiveTexture(GL_TEXTURE1);
+		/*glActiveTexture(GL_TEXTURE1);
 		glBindSampler(1, shadow_sampler);
 
-		glBindTexture(GL_TEXTURE_2D, shadowmap);
+		glBindTexture(GL_TEXTURE_2D, shadowmap);*/
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindSampler(0, sampler);

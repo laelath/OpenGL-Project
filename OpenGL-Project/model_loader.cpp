@@ -1,11 +1,14 @@
 #include <vector>
 #include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 #include <GL/glew.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+//#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>
+//#include <assimp/postprocess.h>
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -19,8 +22,20 @@ std::vector<GLuint> loadedtextures;
 
 void load3DFromFile(const char* path, model* lmodel)
 {
-
-	Assimp::Importer importer;
+	string modelfile;
+	ifstream modelfilestream(path);
+	if (modelfilestream.is_open())
+	{
+		string line = "";
+		while (getline(modelfilestream, line)) modelfile += "/n" + line;
+	}
+	else 
+	{
+		cout << "Cannot open model file: " << path;
+		return;
+	}
+	
+	/*Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
 
@@ -148,7 +163,7 @@ void load3DFromFile(const char* path, model* lmodel)
 		lmodel->materials.push_back(material);
 	}
 
-	//scene->~aiScene();
+	//scene->~aiScene();*/
 }
 
 void drawModel(const model* rmodel, Shader program)

@@ -20,21 +20,22 @@ using namespace glm;
 std::vector<std::string> loadedpaths;
 std::vector<GLuint> loadedtextures;
 
-void load3DFromFile(const char* path, model* lmodel)
+bool load3DFromFile(const char* path, model* lmodel)
 {
+	cout << "Loading file: " << path << endl;
 	string modelfile;
-	ifstream modelfilestream(path);
-	if (modelfilestream.is_open())
+	ifstream modelstream(path);
+	if (modelstream.is_open())
 	{
-		string line = "";
-		while (getline(modelfilestream, line)) modelfile += "/n" + line;
+		string line;
+		while (getline(modelstream, line)) modelfile += "\n" + line;
 	}
 	else 
 	{
-		cout << "Cannot open model file: " << path;
-		return;
+		cout << "Cannot open model file: " << path << endl;
+		return false;
 	}
-	
+
 	/*Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);

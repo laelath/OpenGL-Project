@@ -15,7 +15,6 @@ struct material
 	float shininess;
 	float shine_strength;
 	sampler2D texture;
-	//sampler2D shadowmap;
 };
 
 const int max_lights = 1;
@@ -39,27 +38,23 @@ void main()
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
 	vec2 screen_pos = (modelViewProjection * vec4(position, 1)).xy;
-	//vec3 shadow_color = texture2D(mat.shadowmap, (screen_pos + vec2(1,1)) * 0.5).rgb;
 	
-	for (int i = 0; (i < max_lights) && (light[i].color.a != -1); i++)
+	for (int i = 0; (i < max_lights) && (light[i].color.a != 0); i++)
 	{
-		//if (false)
-		//{
-			vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
-			vec3 light_direction = normalize(light_position - position);
-			float light_distance = distance(position, light_position);
-			float distance_intensity = light[i].color.a / pow(light_distance, 2.0);
-			float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
-			diffuse_level += diffuse_intensity * light[i].color.rgb;
-			
-			if (diffuse_intensity > 0.0)
-			{
-				vec3 reflection_direction = normalize(reflect(light_direction, normal));
-				float specular = max(0.0, dot(view_direction, reflection_direction));
-				float fspecular = pow(specular, mat.shininess);
-				specular_level += fspecular * light[i].color.rgb;
-			}
-		//}
+		vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
+		vec3 light_direction = normalize(light_position - position);
+		float light_distance = distance(position, light_position);
+		float distance_intensity = light[i].color.a / pow(light_distance, 2.0);
+		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
+		diffuse_level += diffuse_intensity * light[i].color.rgb;
+		
+		if (diffuse_intensity > 0.0)
+		{
+			vec3 reflection_direction = normalize(reflect(light_direction, normal));
+			float specular = max(0.0, dot(view_direction, reflection_direction));
+			float fspecular = pow(specular, mat.shininess);
+			specular_level += fspecular * light[i].color.rgb;
+		}
 	}
 
 	vec4 diffuse_texture = texture2D(mat.texture, texCoord);

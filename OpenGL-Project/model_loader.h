@@ -35,7 +35,7 @@ struct model
 	std::vector<mesh> meshes;
 };
 
-void load3DFromFile(const char* pFile, model* lmodel);
+bool load3DFromFile(const char* pFile, model* lmodel);
 
 void drawModel(const model* rmodel, Shader program);
 

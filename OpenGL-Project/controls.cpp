@@ -1,8 +1,8 @@
 #define _USE_MATH_DEFINES
 
-//#include <iostream>
-//#include <fstream>
+#include <iostream>
 #include <string>
+using namespace std;
 
 #include <GLFW/glfw3.h>
 
@@ -143,11 +143,12 @@ void computeMatrices(GLFWwindow* window)
 	
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		printf("%f", position.x);
-		printf(", ");
-		printf("%f", position.y);
-		printf(", ");
-		printf("%f", position.z);
-		printf("\n");
+		cout << position.x << ", " << position.y << ", " << position.z << "\n";
+		//printf("%f", position.x);
+		//printf(", ");
+		//printf("%f", position.y);
+		//printf(", ");
+		//printf("%f", position.z);
+		//printf("\n");
 	}
 }

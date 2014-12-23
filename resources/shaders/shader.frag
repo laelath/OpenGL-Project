@@ -57,7 +57,7 @@ void main()
 		}
 	}
 
-	vec4 diffuse_texture = texture2D(mat.texture, texCoord);
+	vec4 diffuse_texture = texture(mat.texture, texCoord);
 	vec3 ambient_level = ambient_model.rgb * diffuse_texture.rgb * mat.ambient;
 	diffuse_level *= diffuse_texture.rgb * mat.diffuse;
 	specular_level *= /*diffuse_texture.rgb */ mat.specular /* mat.shine_strength*/;

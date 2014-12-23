@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,12 +21,13 @@
 /// THE SOFTWARE.
 ///
 /// @ref core
-/// @file glm/detail/type_gentype.hpp
+/// @file glm/core/type_gentype.hpp
 /// @date 2008-10-05 / 2011-06-15
 /// @author Christophe Riccio
 ///////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#ifndef glm_core_type_gentype
+#define glm_core_type_gentype
 
 namespace glm
 {
@@ -222,3 +219,5 @@ namespace detail
 }//namespace glm
 
 //#include "type_gentype.inl"
+
+#endif//glm_core_type_gentype

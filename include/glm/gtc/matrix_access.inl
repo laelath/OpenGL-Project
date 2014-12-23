@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,14 +32,14 @@ namespace glm
 	GLM_FUNC_QUALIFIER genType row
 	(
 		genType const & m,
-		length_t index,
+		length_t const & index,
 		typename genType::row_type const & x
 	)
 	{
-		assert(index >= 0 && static_cast<detail::component_count_t>(index) < detail::component_count(m[0]));
+		assert(index >= 0 && index < m[0].length());
 
 		genType Result = m;
-		for(detail::component_count_t i = 0; i < detail::component_count(m); ++i)
+		for(length_t i = 0; i < m.length(); ++i)
 			Result[i][index] = x[i];
 		return Result;
 	}
@@ -52,13 +48,13 @@ namespace glm
 	GLM_FUNC_QUALIFIER typename genType::row_type row
 	(
 		genType const & m,
-		length_t index
+		length_t const & index
 	)
 	{
-		assert(index >= 0 && static_cast<detail::component_count_t>(index) < detail::component_count(m[0]));
+		assert(index >= 0 && index < m[0].length());
 
 		typename genType::row_type Result;
-		for(detail::component_count_t i = 0; i < detail::component_count(m); ++i)
+		for(length_t i = 0; i < m.length(); ++i)
 			Result[i] = m[i][index];
 		return Result;
 	}
@@ -67,11 +63,11 @@ namespace glm
 	GLM_FUNC_QUALIFIER genType column
 	(
 		genType const & m,
-		length_t index,
+		length_t const & index,
 		typename genType::col_type const & x
 	)
 	{
-		assert(index >= 0 && static_cast<detail::component_count_t>(index) < detail::component_count(m));
+		assert(index >= 0 && index < m.length());
 
 		genType Result = m;
 		Result[index] = x;
@@ -82,10 +78,10 @@ namespace glm
 	GLM_FUNC_QUALIFIER typename genType::col_type column
 	(
 		genType const & m,
-		length_t index
+		length_t const & index
 	)
 	{
-		assert(index >= 0 && static_cast<detail::component_count_t>(index) < detail::component_count(m));
+		assert(index >= 0 && index < m.length());
 
 		return m[index];
 	}

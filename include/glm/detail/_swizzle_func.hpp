@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,12 +21,13 @@
 /// THE SOFTWARE.
 ///
 /// @ref core
-/// @file glm/detail/_swizzle_func.hpp
+/// @file glm/core/_swizzle_func.hpp
 /// @date 2011-10-16 / 2011-10-16
 /// @author Christophe Riccio
 ///////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#ifndef glm_core_swizzle_func
+#define glm_core_swizzle_func
 
 #define GLM_SWIZZLE_GEN_VEC2_ENTRY(TMPL_TYPE, PRECISION, CLASS_TYPE, SWIZZLED_TYPE, CONST, A, B)	\
 	SWIZZLED_TYPE<TMPL_TYPE, PRECISION> A ## B() CONST												\
@@ -723,3 +720,5 @@
 	GLM_SWIZZLE_GEN_VEC_FROM_VEC4_COMP(TMPL_TYPE, PRECISION, CLASS_TYPE, SWIZZLED_VEC2_TYPE, SWIZZLED_VEC3_TYPE, SWIZZLED_VEC4_TYPE, s, t, p, q)
 
 //GLM_SWIZZLE_GEN_VEC_FROM_VEC4(valType, detail::vec4, detail::vec2, detail::vec3, detail::vec4)
+
+#endif//glm_core_swizzle_func

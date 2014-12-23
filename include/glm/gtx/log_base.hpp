@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,7 +35,8 @@
 /// <glm/gtx/log_base.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#ifndef GLM_GTX_log_base
+#define GLM_GTX_log_base
 
 // Dependency:
 #include "../glm.hpp"
@@ -55,19 +52,14 @@ namespace glm
 
 	//! Logarithm for any base.
 	//! From GLM_GTX_log_base.
-	template <typename genType>
+	template <typename genType> 
 	GLM_FUNC_DECL genType log(
-		genType x,
-		genType base);
-
-	//! Logarithm for any base.
-	//! From GLM_GTX_log_base.
-	template <typename T, precision P, template <typename, precision> class vecType>
-	GLM_FUNC_DECL vecType<T, P> sign(
-		vecType<T, P> const & x,
-		vecType<T, P> const & base);
+		genType const & x, 
+		genType const & base);
 
 	/// @}
 }//namespace glm
 
 #include "log_base.inl"
+
+#endif//GLM_GTX_log_base

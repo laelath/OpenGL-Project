@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,12 +21,11 @@
 /// THE SOFTWARE.
 ///
 /// @ref core
-/// @file glm/detail/func_packing.hpp
+/// @file glm/core/func_packing.hpp
 /// @date 2010-03-17 / 2011-06-15
 /// @author Christophe Riccio
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.4 Floating-Point Pack and Unpack Functions</a>
-/// @see gtc_packing
 /// 
 /// @defgroup core_func_packing Floating-Point Pack and Unpack Functions
 /// @ingroup core
@@ -38,7 +33,8 @@
 /// These functions do not operate component-wise, rather as described in each case.
 ///////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#ifndef GLM_CORE_func_packing
+#define GLM_CORE_func_packing
 
 #include "type_vec2.hpp"
 #include "type_vec4.hpp"
@@ -195,3 +191,5 @@ namespace glm
 }//namespace glm
 
 #include "func_packing.inl"
+
+#endif//GLM_CORE_func_packing

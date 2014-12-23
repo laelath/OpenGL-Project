@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -129,26 +125,26 @@ namespace glm
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER tvec4<bool, P> epsilonEqual
+	GLM_FUNC_QUALIFIER detail::tvec4<bool, P> epsilonEqual
 	(
-		tquat<T, P> const & x,
-		tquat<T, P> const & y,
+		detail::tquat<T, P> const & x,
+		detail::tquat<T, P> const & y,
 		T const & epsilon
 	)
 	{
-		tvec4<T, P> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
-		return lessThan(abs(v), tvec4<T, P>(epsilon));
+		detail::tvec4<T, P> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
+		return lessThan(abs(v), detail::tvec4<T, P>(epsilon));
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER tvec4<bool, P> epsilonNotEqual
+	GLM_FUNC_QUALIFIER detail::tvec4<bool, P> epsilonNotEqual
 	(
-		tquat<T, P> const & x,
-		tquat<T, P> const & y,
+		detail::tquat<T, P> const & x,
+		detail::tquat<T, P> const & y,
 		T const & epsilon
 	)
 	{
-		tvec4<T, P> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
-		return greaterThanEqual(abs(v), tvec4<T, P>(epsilon));
+		detail::tvec4<T, P> v(x.x - y.x, x.y - y.y, x.z - y.z, x.w - y.w);
+		return greaterThanEqual(abs(v), detail::tvec4<T, P>(epsilon));
 	}
 }//namespace glm

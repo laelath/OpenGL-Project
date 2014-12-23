@@ -6,9 +6,9 @@ using namespace std;
 
 #include <GL/glew.h>
 
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -17,36 +17,24 @@ using namespace glm;
 #include "image_loader.h"
 #include "model_loader.h"
 
-std::vector<std::string> loadedpaths;
-std::vector<GLuint> loadedtextures;
+vector<string> loadedpaths;
+vector<GLuint> loadedtextures;
 
 bool load3DFromFile(const char* path, model* lmodel)
 {
-	cout << "Loading file: " << path << endl;
-	string modelfile;
-	ifstream modelstream(path);
-	if (modelstream.is_open())
-	{
-		string line;
-		while (getline(modelstream, line)) modelfile += "\n" + line;
-	}
-	else 
-	{
-		cout << "Cannot open model file: " << path << endl;
-		return false;
-	}
-
-	/*Assimp::Importer importer;
+	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
 
 	if (!scene)
 	{
-		printf("Couldn't open file: %s\n", path, importer.GetErrorString());
-		return;
+		//printf("Couldn't open file: %s\n", path, importer.GetErrorString());
+		cerr << "Couldn't open file: " << path << endl << "\t" << importer.GetErrorString() << endl;
+		return false;
 	}
 
-	//model model = *lmodel;
+	cout << "Loading 3D mesh: " << path << endl;
+
 	glGenVertexArrays(1, &lmodel->vao);
 	glBindVertexArray(lmodel->vao);
 
@@ -88,7 +76,7 @@ bool load3DFromFile(const char* path, model* lmodel)
 		}
 	}
 
-	std::vector<float> vertexbuffer;
+	vector<float> vertexbuffer;
 	for (unsigned int i = 0; i < lmodel->vertices.size(); i++)
 	{
 		vertexbuffer.push_back(lmodel->vertices[i].position.x);
@@ -132,12 +120,12 @@ bool load3DFromFile(const char* path, model* lmodel)
 
 		aiString texpath;
 		aimaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texpath);
-		std::string texname = texpath.data;
+		string texname = texpath.data;
 
 		GLuint texture = 0;
 		if (texname != "")
 		{
-			std::string texloadpath = std::string(path).substr(0, (std::string(path).find_last_of("/")) + 1) + texname;
+			string texloadpath = string(path).substr(0, (string(path).find_last_of("/")) + 1) + texname;
 
 			bool isfound = false;
 			for (unsigned int j = 0; j < loadedpaths.size(); j++)
@@ -151,9 +139,9 @@ bool load3DFromFile(const char* path, model* lmodel)
 
 			if (isfound == false)
 			{
-				printf("loading texture: %s\n", texloadpath.c_str());
+				texture = loadTexture2D(texloadpath.c_str());
 
-				texture = loadGLpng(texloadpath.c_str());
+				//texture = loadGLpng(texloadpath.c_str());
 
 				loadedpaths.push_back(texloadpath);
 				loadedtextures.push_back(texture);
@@ -164,7 +152,7 @@ bool load3DFromFile(const char* path, model* lmodel)
 		lmodel->materials.push_back(material);
 	}
 
-	//scene->~aiScene();*/
+	return true;
 }
 
 void drawModel(const model* rmodel, Shader program)

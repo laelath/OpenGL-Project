@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,9 +30,11 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/dual_quaternion.hpp>
 
-namespace glm
+namespace glm{
+namespace detail
 {
 // tvec1 type explicit instantiation
+/*
 template struct tvec1<uint8, lowp>;
 template struct tvec1<uint16, lowp>;
 template struct tvec1<uint32, lowp>;
@@ -45,6 +43,7 @@ template struct tvec1<int8, lowp>;
 template struct tvec1<int16, lowp>;
 template struct tvec1<int32, lowp>;
 template struct tvec1<int64, lowp>;
+template struct tvec1<float16, lowp>;
 template struct tvec1<float32, lowp>;
 template struct tvec1<float64, lowp>;
 
@@ -56,6 +55,7 @@ template struct tvec1<int8, mediump>;
 template struct tvec1<int16, mediump>;
 template struct tvec1<int32, mediump>;
 template struct tvec1<int64, mediump>;
+template struct tvec1<float16, mediump>;
 template struct tvec1<float32, mediump>;
 template struct tvec1<float64, mediump>;
 
@@ -67,9 +67,10 @@ template struct tvec1<int8, highp>;
 template struct tvec1<int16, highp>;
 template struct tvec1<int32, highp>;
 template struct tvec1<int64, highp>;
+template struct tvec1<float16, highp>;
 template struct tvec1<float32, highp>;
 template struct tvec1<float64, highp>;
-
+*/
 // tvec2 type explicit instantiation
 template struct tvec2<uint8, lowp>;
 template struct tvec2<uint16, lowp>;
@@ -282,5 +283,6 @@ template struct tdualquat<float64, mediump>;
 template struct tdualquat<float32, highp>;
 template struct tdualquat<float64, highp>;
 
+}//namespace detail
 }//namespace glm
 

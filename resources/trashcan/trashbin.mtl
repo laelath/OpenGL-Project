@@ -12,7 +12,7 @@ newmtl gris_poubelle
 	illum 2
 	Kd 0.401961 0.401961 0.401961
 	Ks 0.9 0.9 0.9
-	Ka 0.121569 0.121569 0.121569
+	Ka 0.421569 0.421569 0.421569
 	map_Kd rustbin.png
 
 newmtl justin_mtl
@@ -21,6 +21,6 @@ newmtl justin_mtl
 	illum 2
 	Kd 0.401961 0.401961 0.401961
 	Ks 0.9 0.9 0.9
-	Ka 0.121569 0.121569 0.121569
+	Ka 0.421569 0.421569 0.421569
 	map_Kd Font1.png
 

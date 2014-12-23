@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+using namespace std;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -16,13 +17,14 @@ using namespace glm;
 #include "model_loader.h"
 #include "image_loader.h"
 
-vec3 ambient_model = vec3(0.01f, 0.05f, 0.1f);
+vec3 ambient_model = vec3(0.01f, 0.05f, 0.2f);
+//vec3 ambient_model = vec3(0.1f, 0.5f, 1.0f);
 
 int main()
 {
 	if (!glfwInit())
 	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
+		cerr << "Failed to initialize GLFW." << endl;
 		return (-1);
 	}
 
@@ -37,7 +39,7 @@ int main()
 	window = glfwCreateWindow(800, 600, "C++ OpenGL", NULL, NULL);
 
 	if (window == NULL){
-		fprintf(stderr, "Failed to open GLFW window.\n");
+		cerr << "Failed to open GLFW window." << endl;
 		glfwTerminate();
 		return -1;
 	}
@@ -46,10 +48,11 @@ int main()
 	glewExperimental = true;
 
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
+		cerr << "Failed to initialize GLEW." << endl;
 		return -1;
 	}
-
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
@@ -57,7 +60,6 @@ int main()
 	glClearColor(ambient_model.r, ambient_model.g, ambient_model.b, 0.1f);
 
 	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
-	//GLuint programID = LoadShaders("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
 
 	GLuint sampler;
 	glGenSamplers(1, &sampler);
@@ -70,19 +72,14 @@ int main()
 	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);*/
 
-	model torus, trashbin;
+	model torus, trashbin, floor;
 	load3DFromFile("../resources/torusball/torusball.obj", &torus);
 	load3DFromFile("../resources/trashcan/trashbin.obj", &trashbin);
-
-	//GLuint shadowmap = loadGLpng("../resources/shadowmap.png");
+	load3DFromFile("../resources/floor/floor.obj", &floor);
 
 	light lit;
-	lit.position = vec3(-20, 75, 0);
-	lit.color = vec4(1.0, 0.9, 0.7, 10000);
-
-	light endlit;
-	endlit.position = vec3();
-	endlit.color = vec4(0,0,0,-1);
+	lit.position = vec3(-20, 100, 0);
+	lit.color = vec4(1.0, 0.9, 0.7, 15000);
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
@@ -99,30 +96,19 @@ int main()
 		glUseProgram(program.id);
 
 		program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
-		//GLuint mvpID = glGetUniformLocation(program.id, "modelViewProjection");
-		//glUniformMatrix4fv(mvpID, 1, GL_FALSE, &modelViewProjection[0][0]);
 
 		program.uniformMatrix4f(modelView, "modelView");
-		//GLuint mvID = glGetUniformLocation(program.id, "modelView");
-		//glUniformMatrix4fv(mvID, 1, GL_FALSE, &modelView[0][0]);
 
 		program.uniformLight(lit, "light[0]");
-		program.uniformLight(endlit, "light[1]");
 
 		program.uniform3f(ambient_model, "ambient_model");
-		//int mloc = glGetUniformLocation(programID, "ambient_model");
-		//glUniform3f(mloc, ambient_model.r, ambient_model.g, ambient_model.b);
-
-		/*glActiveTexture(GL_TEXTURE1);
-		glBindSampler(1, shadow_sampler);
-
-		glBindTexture(GL_TEXTURE_2D, shadowmap);*/
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindSampler(0, sampler);
 
 		drawModel(&torus, program);
 		drawModel(&trashbin, program);
+		drawModel(&floor, program);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -30,7 +30,7 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	else
 	{
 		//printf("Impossible to open %s. Are you in the right directory?\n", vertex_file_path);
-		cout << "Cannot open: " << vertex_file_path << endl;
+		cerr << "Cannot open: " << vertex_file_path << endl;
 		return 0;
 	}
 
@@ -62,7 +62,7 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
 		//printf("%s\n", &VertexShaderErrorMessage[0]);
-		cout << &VertexShaderErrorMessage[0] << endl;
+		cerr << &VertexShaderErrorMessage[0] << endl;
 	}
 
 	// Compile Fragment Shader
@@ -80,7 +80,7 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		//printf("%s\n", &FragmentShaderErrorMessage[0]);
-		cout << &FragmentShaderErrorMessage[0] << endl;
+		cerr << &FragmentShaderErrorMessage[0] << endl;
 	}
 	
 	// Link the program
@@ -99,7 +99,7 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 		vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 		//printf("%s\n", &ProgramErrorMessage[0]);
-		cout << &ProgramErrorMessage[0] << endl;
+		cerr << &ProgramErrorMessage[0] << endl;
 	}
 
 	glDeleteShader(VertexShaderID);

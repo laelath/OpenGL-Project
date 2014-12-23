@@ -12,10 +12,6 @@
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
 /// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,7 +35,8 @@
 /// <glm/gtx/polar_coordinates.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#ifndef GLM_GTX_polar_coordinates
+#define GLM_GTX_polar_coordinates
 
 // Dependency:
 #include "../glm.hpp"
@@ -57,17 +54,19 @@ namespace glm
 	///
 	/// @see gtx_polar_coordinates
 	template <typename T, precision P>
-	GLM_FUNC_DECL tvec3<T, P> polar(
-		tvec3<T, P> const & euclidean);
+	GLM_FUNC_DECL detail::tvec3<T, P> polar(
+		detail::tvec3<T, P> const & euclidean);
 
 	/// Convert Polar to Euclidean coordinates.
 	///
 	/// @see gtx_polar_coordinates
 	template <typename T, precision P>
-	GLM_FUNC_DECL tvec3<T, P> euclidean(
-		tvec2<T, P> const & polar);
+	GLM_FUNC_DECL detail::tvec3<T, P> euclidean(
+		detail::tvec2<T, P> const & polar);
 
 	/// @}
 }//namespace glm
 
 #include "polar_coordinates.inl"
+
+#endif//GLM_GTX_polar_coordinates

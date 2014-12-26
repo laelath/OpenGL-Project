@@ -18,7 +18,6 @@ using namespace glm;
 #include "image_loader.h"
 
 vec3 ambient_model = vec3(0.01f, 0.05f, 0.2f);
-//vec3 ambient_model = vec3(0.1f, 0.5f, 1.0f);
 
 int main()
 {
@@ -67,19 +66,14 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
-	/*GLuint shadow_sampler;
-	glGenSamplers(1, &shadow_sampler);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);*/
-
 	model torus, trashbin, floor;
 	load3DFromFile("../resources/torusball/torusball.obj", &torus);
 	load3DFromFile("../resources/trashcan/trashbin.obj", &trashbin);
 	load3DFromFile("../resources/floor/floor.obj", &floor);
 
-	light lit;
+	point_light lit;
 	lit.position = vec3(-20, 100, 0);
-	lit.color = vec4(1.0, 0.9, 0.7, 15000);
+	lit.color = vec4(1.0, 0.9, 0.7, 150);
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
@@ -99,7 +93,7 @@ int main()
 
 		program.uniformMatrix4f(modelView, "modelView");
 
-		program.uniformLight(lit, "light[0]");
+		program.uniformPtLight(lit, "light[0]");
 
 		program.uniform3f(ambient_model, "ambient_model");
 

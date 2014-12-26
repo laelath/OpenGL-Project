@@ -174,8 +174,9 @@ void drawModel(const model* rmodel, Shader program)
 		program.uniform1f(mat->opacity, "mat.opacity");
 		program.uniform1f(mat->shininess, "mat.shininess");
 		program.uniform1f(mat->shine_strength, "mat.shine_strength");
-		
+
 		glBindTexture(GL_TEXTURE_2D, mat->texture);
+		program.uniform1i(0, "mat.texture");
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
 		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);

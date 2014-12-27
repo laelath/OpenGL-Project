@@ -17,7 +17,8 @@ using namespace glm;
 #include "model_loader.h"
 #include "image_loader.h"
 
-vec3 ambient_model = vec3(0.01f, 0.05f, 0.2f);
+//vec3 ambient_model = vec3(0.01f, 0.05f, 0.2f);
+vec3 ambient_model = vec3(0.0f, 0.0f, 0.0f);
 
 int main()
 {
@@ -55,10 +56,10 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
 	glClearColor(ambient_model.r, ambient_model.g, ambient_model.b, 0.1f);
 
 	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
+	Shader shadow_program("../resources/shaders/shadows.vert", "../resources/shaders/shadows.frag", "../resources/shaders/shadows.geom");
 
 	GLuint sampler;
 	glGenSamplers(1, &sampler);
@@ -74,9 +75,32 @@ int main()
 	point_light lit;
 	lit.position = vec3(-20, 100, 0);
 	lit.color = vec4(1.0, 0.9, 0.7, 150);
+	initShadowBuffers(&lit);
+	updateMatrices(&lit);
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
+		glBindFramebuffer(GL_FRAMEBUFFER, lit.framebuffer);
+		glViewport(0, 0, 1024, 1024);
+
+		glCullFace(GL_FRONT);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glUseProgram(shadow_program.id);
+
+		for (int i = 0; i < 6; i++)
+		{
+			shadow_program.uniformMatrix4f(lit.projectionMatrices[i], "shadowmapProjections[" + to_string(i) + "]");
+		}
+
+		drawModel(&torus, shadow_program);
+		drawModel(&trashbin, shadow_program);
+		drawModel(&floor, shadow_program);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glCullFace(GL_BACK);
+
 		computeMatrices(window);
 		mat4 projection = getProjectionMatrix();
 		mat4 view = getViewMatrix();
@@ -90,11 +114,8 @@ int main()
 		glUseProgram(program.id);
 
 		program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
-
 		program.uniformMatrix4f(modelView, "modelView");
-
-		program.uniformPtLight(lit, "light[0]");
-
+		program.uniformLight(lit, "light[0]");
 		program.uniform3f(ambient_model, "ambient_model");
 
 		glActiveTexture(GL_TEXTURE0);

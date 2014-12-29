@@ -46,8 +46,6 @@ void computeMatrices(GLFWwindow* window)
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
-	glViewport(0, 0, width, height);
-
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

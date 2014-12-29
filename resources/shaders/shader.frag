@@ -63,7 +63,7 @@ void main()
 	vec4 diffuse_texture = texture(mat.texture, texCoord);
 	vec3 ambient_level = ambient_model.rgb * diffuse_texture.rgb * mat.ambient;
 	diffuse_level *= diffuse_texture.rgb * mat.diffuse;
-	specular_level *= /*diffuse_texture.rgb */ mat.specular /* mat.shine_strength*/;
+	specular_level *= mat.specular /* mat.shine_strength*/;
 	
 	frag_color.rgb = diffuse_level + specular_level + ambient_level;
 	frag_color.a = diffuse_texture.a * mat.opacity;

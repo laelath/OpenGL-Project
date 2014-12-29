@@ -29,6 +29,7 @@ dlldata.c
 *_i.h
 *.ilk
 *.meta
+*.obj
 *.idb
 *.tlog
 *.exe

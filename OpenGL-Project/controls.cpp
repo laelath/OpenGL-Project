@@ -25,12 +25,12 @@ mat4 getProjectionMatrix()
 	return ProjectionMatrix;
 }
 
-vec3 position = vec3(0, 0, 5);
+vec3 position = vec3(0, 50, 150);
 float horizontalAngle = 0.0f;
 float verticalAngle = 0.0f;
 float initialFoV = 90.0f;
 
-float speed = 3.0f;
+float speed = 50.0f;
 float mouseSpeed = 0.001f;
 float speedMultiplyer = 1.0f;
 
@@ -45,8 +45,6 @@ void computeMatrices(GLFWwindow* window)
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
-
-	glViewport(0, 0, width, height);
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
@@ -66,8 +64,8 @@ void computeMatrices(GLFWwindow* window)
 
 		glfwSetCursorPos(window, 0, 0);
 
-		horizontalAngle -= mouseSpeed * float(xpos);
-		verticalAngle += mouseSpeed * float(ypos);
+		horizontalAngle += mouseSpeed * float(xpos);
+		verticalAngle -= mouseSpeed * float(ypos);
 	}
 	
 	float verticalLimit = radians(90.0f);
@@ -92,9 +90,9 @@ void computeMatrices(GLFWwindow* window)
 		horizontalAngle += radians(360.0f);
 	}
 
-	vec3 direction(cos(verticalAngle) * sin(horizontalAngle), sin(verticalAngle), cos(verticalAngle) * cos(horizontalAngle));
-	vec3 right = vec3(sin(horizontalAngle - M_PI_2), 0, cos(horizontalAngle - M_PI_2));
-	vec3 up = cross(right, direction);
+	vec3 direction(cos(verticalAngle) * sin(horizontalAngle), sin(verticalAngle), -cos(verticalAngle) * cos(horizontalAngle));
+	vec3 left = vec3(sin(horizontalAngle + M_PI_2), 0, cos(horizontalAngle - M_PI_2));
+	vec3 up = cross(left, direction);
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
@@ -108,22 +106,22 @@ void computeMatrices(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		position -= direction * deltaTime * speed;
+		position += direction * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		position += direction * deltaTime * speed;
+		position -= direction * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		position -= right * deltaTime * speed;
+		position += left * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		position += right * deltaTime * speed;
+		position -= left * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
@@ -139,16 +137,13 @@ void computeMatrices(GLFWwindow* window)
 	float FoV = initialFoV;
 
 	ProjectionMatrix = perspective(radians(FoV), float(width) / float(height), 0.1f, 100000.0f);
-	ViewMatrix = lookAt(position, position - direction, up);
+	//ProjectionMatrix = ortho(-float(width) * 0.25f, float(width) * 0.25f, -float(height) * 0.25f, float(height) * 0.25f, 1000.0f, -1000.0f);
+	ViewMatrix = lookAt(position, position + direction, up);
 	
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		cout << position.x << ", " << position.y << ", " << position.z << "\n";
-		//printf("%f", position.x);
-		//printf(", ");
-		//printf("%f", position.y);
-		//printf(", ");
-		//printf("%f", position.z);
-		//printf("\n");
+		cout << position.x << ", " << position.y << ", " << position.z << endl;
+		cout << direction.x << ", " << direction.y << ", " << direction.z << endl;
+		cout << horizontalAngle << ", " << verticalAngle << endl;
 	}
 }

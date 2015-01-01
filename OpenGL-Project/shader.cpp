@@ -118,6 +118,12 @@ Shader::Shader(const char* vertex_file_path, const char* fragment_file_path)
 	id = LoadShaders(vertex_file_path, fragment_file_path);
 }
 
+void Shader::uniform1i(int i, string name)
+{
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform1iv(loc, 1, &i);
+}
+
 void Shader::uniform1f(float f, string name)
 {
 	int loc = glGetUniformLocation(id, name.c_str());

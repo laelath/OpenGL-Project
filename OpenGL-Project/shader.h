@@ -15,6 +15,7 @@ public:
 
 	GLuint id;
 
+	void uniform1i(int i, std::string name);
 	void uniform1f(float f, std::string name);
 	void uniform2f(vec2 vec, std::string name);
 	void uniform3f(vec3 vec, std::string name);
@@ -24,8 +25,5 @@ public:
 };
 
 GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
-
-//void BindLight(GLuint shader, string name, light l);
-//void BindLight(Shader shader, string name, light l);
 
 #endif

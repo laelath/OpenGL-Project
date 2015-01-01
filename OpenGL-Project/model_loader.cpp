@@ -28,7 +28,6 @@ bool load3DFromFile(const char* path, model* lmodel)
 
 	if (!scene)
 	{
-		//printf("Couldn't open file: %s\n", path, importer.GetErrorString());
 		cerr << "Couldn't open file: " << path << endl << "\t" << importer.GetErrorString() << endl;
 		return false;
 	}
@@ -141,8 +140,6 @@ bool load3DFromFile(const char* path, model* lmodel)
 			{
 				texture = loadTexture2D(texloadpath.c_str());
 
-				//texture = loadGLpng(texloadpath.c_str());
-
 				loadedpaths.push_back(texloadpath);
 				loadedtextures.push_back(texture);
 			}
@@ -176,10 +173,12 @@ void drawModel(const model* rmodel, Shader program)
 		program.uniform1f(mat->shine_strength, "mat.shine_strength");
 		
 		glBindTexture(GL_TEXTURE_2D, mat->texture);
+		program.uniform1i(0, "mat.texture");
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
 		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

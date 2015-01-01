@@ -175,7 +175,6 @@ void drawModel(const model* rmodel, Shader program)
 		program.uniform1f(mat->shininess, "mat.shininess");
 		program.uniform1f(mat->shine_strength, "mat.shine_strength");
 
-		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mat->texture);
 		program.uniform1i(0, "mat.texture");
 

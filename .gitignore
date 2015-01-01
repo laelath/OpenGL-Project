@@ -29,9 +29,7 @@ dlldata.c
 *_i.h
 *.ilk
 *.meta
-*.idb
-*.tlog
-*.exe
+*.obj
 *.pch
 *.pdb
 *.pgc
@@ -50,6 +48,9 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
+*.idb
+*.tlog
+*.exe
 
 # Chutzpah Test files
 _Chutzpah*

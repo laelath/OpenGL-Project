@@ -241,7 +241,7 @@ void initShadowBuffers(point_light* l)
 
 	for (int i = 0; i < 6; i++)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT24, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT24, 1024, 1024, 0, GL_DEPTH_COMPONENT24, GL_FLOAT, 0);
 	}
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -349,5 +349,5 @@ void Shader::uniformLight(point_light l, string name)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, l.shadowcubemap);
 	
 	int tloc = glGetUniformLocation(id, (name + ".shadow_map").c_str());
-	glUniform1i(tloc, 1);
+	glUniform1i(tloc, l.shadowcubemap);
 }

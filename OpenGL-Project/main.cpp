@@ -103,22 +103,6 @@ int main()
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cerr << "Framebuffer failed to initialize." << endl;
 	
-
-	static const GLfloat g_quad_vertex_buffer_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,
-	};
-	
-	GLuint quad_vertexbuffer;
-	glGenBuffers(1, &quad_vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
-
-
 	mat4 depthMVP = ortho<float>(-200, 200, 200, -200, -100, 100) * lookAt(vec3(-1, 2, 0), vec3(0,0,0), vec3(0,1,0));
 
 	glm::mat4 biasMatrix(
@@ -208,19 +192,6 @@ int main()
 		drawModel(&torus, program);
 		drawModel(&trashbin, program);
 		drawModel(&floor, program);
-
-		glViewport(0, 0, 512, 512);
-
-		glUseProgram(quad_program.id);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, depthTexture);
-		quad_program.uniform1i(0, "texture");
-
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDisableVertexAttribArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

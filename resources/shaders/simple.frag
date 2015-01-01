@@ -24,7 +24,7 @@ uniform mat4 modelView;
 void main()
 {
 	frag_color = vec4(0,0,0,1);
-	if (texture(shadowMap, shadowCoord.xy).z >= shadowCoord.z)
+	if (texture(shadowMap, shadowCoord.xy).z > shadowCoord.z)
 	{
 		frag_color = texture(mat.texture, texCoord);
 		vec3 direction = (modelView * vec4(light_direction, 0)).xyz;

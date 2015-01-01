@@ -4,7 +4,6 @@ struct point_light
 {
 	vec3 position;
 	vec4 color;
-	samplerCube shadow_map;
 };
 
 struct material
@@ -38,11 +37,10 @@ void main()
 	vec3 diffuse_level = vec3(0,0,0);
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
+	vec2 screen_pos = (modelViewProjection * vec4(position, 1)).xy;
 	
 	for (int i = 0; (i < max_lights) && (light[i].color.a != 0); i++)
 	{
-		if (texture(light[i].shadow_map, position - light[i].position).z == 0.0)
-		{
 		vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
 		vec3 light_direction = normalize(light_position - position);
 		float light_distance = distance(position, light_position);
@@ -56,7 +54,6 @@ void main()
 			float specular = max(0.0, dot(view_direction, reflection_direction));
 			float fspecular = pow(specular, mat.shininess);
 			specular_level += fspecular * light[i].color.rgb;
-		}
 		}
 	}
 

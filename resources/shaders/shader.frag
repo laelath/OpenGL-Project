@@ -44,7 +44,7 @@ void main()
 		vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
 		vec3 light_direction = normalize(light_position - position);
 		float light_distance = distance(position, light_position);
-		float distance_intensity = light[i].color.a / light_distance/*pow(light_distance, 2.0)*/;
+		float distance_intensity = light[i].color.a / pow(light_distance, 2.0);
 		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
 		diffuse_level += diffuse_intensity * light[i].color.rgb;
 		

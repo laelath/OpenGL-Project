@@ -28,7 +28,7 @@ struct mesh
 
 struct model
 {
-	GLuint vao;
+	//GLuint vao;
 	GLuint vbo;
 	std::vector<vertex> vertices;
 	std::vector<material> materials;

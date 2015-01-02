@@ -19,32 +19,30 @@ struct material
 
 const int max_lights = 1;
 
+uniform material mat;
+uniform vec3 ambient_model;
+uniform point_light light[max_lights];
+
+uniform mat4 modelView;
+
 in vec3 position;
 in vec2 texCoord;
 in vec3 normal;
 
 out vec4 frag_color;
 
-uniform material mat;
-uniform vec3 ambient_model;
-uniform point_light light[max_lights];
-
-uniform mat4 modelView;
-uniform mat4 modelViewProjection;
-
 void main()
 {
 	vec3 diffuse_level = vec3(0,0,0);
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
-	vec2 screen_pos = (modelViewProjection * vec4(position, 1)).xy;
 	
 	for (int i = 0; (i < max_lights) && (light[i].color.a != 0); i++)
 	{
 		vec3 light_position = (modelView * vec4(light[i].position, 1)).xyz;
 		vec3 light_direction = normalize(light_position - position);
 		float light_distance = distance(position, light_position);
-		float distance_intensity = light[i].color.a / pow(light_distance, 2.0);
+		float distance_intensity = light[i].color.a / light_distance /*pow(light_distance, 2.0)*/;
 		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
 		diffuse_level += diffuse_intensity * light[i].color.rgb;
 		
@@ -60,7 +58,7 @@ void main()
 	vec4 diffuse_texture = texture(mat.texture, texCoord);
 	vec3 ambient_level = ambient_model.rgb * diffuse_texture.rgb * mat.ambient;
 	diffuse_level *= diffuse_texture.rgb * mat.diffuse;
-	specular_level *= /*diffuse_texture.rgb */ mat.specular /* mat.shine_strength*/;
+	specular_level *= mat.specular /* mat.shine_strength*/;
 	
 	frag_color.rgb = diffuse_level + specular_level + ambient_level;
 	frag_color.a = diffuse_texture.a * mat.opacity;

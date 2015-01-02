@@ -20,6 +20,8 @@ using namespace glm;
 vector<string> loadedpaths;
 vector<GLuint> loadedtextures;
 
+GLuint model_vao;
+
 bool load3DFromFile(const char* path, model* lmodel)
 {
 	Assimp::Importer importer;
@@ -34,8 +36,8 @@ bool load3DFromFile(const char* path, model* lmodel)
 
 	cout << "Loading 3D mesh: " << path << endl;
 
-	glGenVertexArrays(1, &lmodel->vao);
-	glBindVertexArray(lmodel->vao);
+	//glGenVertexArrays(1, &lmodel->vao);
+	//glBindVertexArray(lmodel->vao);
 
 	glGenBuffers(1, &lmodel->vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, lmodel->vbo);
@@ -91,10 +93,10 @@ bool load3DFromFile(const char* path, model* lmodel)
 	}
 
 	glBufferData(GL_ARRAY_BUFFER, vertexbuffer.size() * sizeof(float), &vertexbuffer[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 	{
@@ -152,14 +154,30 @@ bool load3DFromFile(const char* path, model* lmodel)
 	return true;
 }
 
+/*void initModelVertexArray()
+{
+	glGenVertexArrays(1, &model_vao);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+}*/
+
 void drawModel(const model* rmodel, Shader program)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	glBindVertexArray(rmodel->vao);
+	//glBindVertexArray(rmodel->vao);
+	//glBindVertexArray(model_vao);
+	//glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, rmodel->vbo);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+
 	for (mesh mesh : rmodel->meshes)
 	{
 		const material* mat = &rmodel->materials[mesh.material];

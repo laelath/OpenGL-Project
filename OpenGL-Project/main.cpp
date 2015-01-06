@@ -17,8 +17,8 @@ using namespace glm;
 #include "model_loader.h"
 #include "image_loader.h"
 
-vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
-//vec3 ambient_model = vec3(0.1f, 0.5f, 1.0f);
+//vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
+vec3 ambient_model = vec3(0.2f, 0.25f, 0.3f);
 
 int main()
 {
@@ -95,35 +95,11 @@ int main()
 
 	//TEMP CODE ************************************************************************************************************************************************************************************
 
-	GLuint test_texture = loadTexture2D("../resources/textures/testtexture.tga");
-
-	float quad_vertex_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f,
-	};
-	
-	GLuint quad_vertex_array, quad_vertex_buffer;
-
-	glGenVertexArrays(1, &quad_vertex_array);
-	glBindVertexArray(quad_vertex_array);
-
-	glGenBuffers(1, &quad_vertex_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertex_buffer);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertex_data), quad_vertex_data, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
 	GLuint framebuffer;
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-	unsigned int shadowResolution = 8192;
+	unsigned int shadowResolution = 2048;
 
 	GLuint depthTexture;
 	glGenTextures(1, &depthTexture);
@@ -159,7 +135,6 @@ int main()
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		//glCullFace(GL_FRONT);
 		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
 		{
 			lightDirection = normalize(getPlayerPos());
@@ -191,11 +166,8 @@ int main()
 
 		glViewport(0, 0, width, height);
 
-		//computeMatrices(window);
 		mat4 projection = getProjectionMatrix();
 		mat4 view = getViewMatrix();
-		//mat4 projection = depthProjection;
-		//mat4 view = depthView;
 		mat4 model = mat4(1.0f);
 
 		mat4 modelView = view * model;
@@ -203,8 +175,6 @@ int main()
 		mat4 depthBiasModelViewProjection = biasMatrix * depthModelViewProjection;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glCullFace(GL_BACK);
 
 		glUseProgram(program.id);
 
@@ -237,30 +207,6 @@ int main()
 
 		glBindVertexArray(0);
 
-		//
-		glViewport(0, 0, 384, 384);
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		glUseProgram(texturepass.id);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindSampler(0, shadow_sampler);
-		
-		glBindTexture(GL_TEXTURE_2D, depthTexture);
-		texturepass.uniform1i(0, "Texture");
-
-		glBindVertexArray(quad_vertex_array);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, quad_vertex_buffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
-		//*/
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

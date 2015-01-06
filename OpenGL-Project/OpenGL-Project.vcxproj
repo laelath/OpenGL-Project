@@ -23,6 +23,15 @@
     <ClCompile Include="model_loader.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\shaders\depth.frag" />
+    <None Include="..\resources\shaders\depth.vert" />
+    <None Include="..\resources\shaders\shader.frag" />
+    <None Include="..\resources\shaders\shader.vert" />
+    <None Include="..\resources\shaders\simple.frag" />
+    <None Include="..\resources\shaders\texture.frag" />
+    <None Include="..\resources\shaders\texture.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{88E6408C-01F8-4AAD-8618-A95B223D41AB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

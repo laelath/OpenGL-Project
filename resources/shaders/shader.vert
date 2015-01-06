@@ -8,14 +8,20 @@ out vec3 position;
 out vec2 texCoord;
 out vec3 normal;
 
+out vec4 shadowCoord;
+
 uniform mat4 modelView;
 uniform mat4 modelViewProjection;
+
+uniform mat4 depthBiasMVP;
 
 void main()
 {
 	position = (modelView * vec4(in_Vertex, 1)).xyz;
 	texCoord = in_TexCoord;
 	normal = (modelView * vec4(in_Normal, 0)).xyz;
+	
+	shadowCoord = depthBiasMVP * vec4(in_Vertex, 1);
 	
 	gl_Position = modelViewProjection * vec4(in_Vertex, 1);
 }

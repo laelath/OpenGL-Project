@@ -15,17 +15,23 @@ using namespace glm;
 
 mat4 ViewMatrix;
 mat4 ProjectionMatrix;
+vec3 position = vec3(0, 50, 150);
 
 mat4 getViewMatrix()
 {
 	return ViewMatrix;
 }
+
 mat4 getProjectionMatrix()
 {
 	return ProjectionMatrix;
 }
 
-vec3 position = vec3(0, 50, 150);
+vec3 getPlayerPos()
+{
+	return position;
+}
+
 float horizontalAngle = 0.0f;
 float verticalAngle = 0.0f;
 float initialFoV = 90.0f;

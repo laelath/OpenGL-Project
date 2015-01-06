@@ -13,6 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{386a2c6c-b6f8-4b5b-ad0d-7146bb90b23d}</UniqueIdentifier>
+      <Extensions>vert;geom;frag</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="controls.h">
@@ -44,5 +48,28 @@
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\shaders\depth.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\depth.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\shader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\shader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\simple.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\texture.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\texture.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

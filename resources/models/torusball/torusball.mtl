@@ -9,8 +9,8 @@ newmtl wire_176026026
 	Ka 0.6902 0.6902 0.6902
 	Kd 0.6902 0.6902 0.6902
 	Ks 0.3500 0.3500 0.3500
-	map_Kd Crate2.png
-	map_Ka Crate2.png
+	map_Kd ../../textures/Crate2.png
+	map_Ka ../../textures/Crate2.png
 
 newmtl wire_198225087
 	Ns 20
@@ -20,5 +20,5 @@ newmtl wire_198225087
 	Ka 0.8824 0.8824 0.8824
 	Kd 0.8824 0.8824 0.8824
 	Ks 0.8000 0.8000 0.8000
-	map_Kd Font1.png
-	map_Ka Crate2.png
+	map_Kd ../../textures/Font1.png
+	map_Ka ../../textures/Crate2.png

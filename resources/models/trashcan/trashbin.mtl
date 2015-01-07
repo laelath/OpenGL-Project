@@ -13,7 +13,7 @@ newmtl gris_poubelle
 	Kd 0.401961 0.401961 0.401961
 	Ks 0.9 0.9 0.9
 	Ka 0.421569 0.421569 0.421569
-	map_Kd rustbin.png
+	map_Kd ../../textures/rustbin.png
 
 newmtl justin_mtl
 	Ns 15
@@ -22,5 +22,5 @@ newmtl justin_mtl
 	Kd 0.401961 0.401961 0.401961
 	Ks 0.9 0.9 0.9
 	Ka 0.421569 0.421569 0.421569
-	map_Kd Font1.png
+	map_Kd ../../textures/Font1.png
 

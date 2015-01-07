@@ -29,7 +29,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	}
 	else
 	{
-		//printf("Impossible to open %s. Are you in the right directory?\n", vertex_file_path);
 		cerr << "Cannot open: " << vertex_file_path << endl;
 		return 0;
 	}
@@ -48,7 +47,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	//printf("Compiling shader : %s\n", vertex_file_path);
 	cout << "Compiling shader : " << vertex_file_path << endl;
 	char const* VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
@@ -61,12 +59,10 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	{
 		vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		//printf("%s\n", &VertexShaderErrorMessage[0]);
 		cerr << &VertexShaderErrorMessage[0] << endl;
 	}
 
 	// Compile Fragment Shader
-	//printf("Compiling shader : %s\n", fragment_file_path);
 	cout << "Compiling shader : " << fragment_file_path << endl;
 	char const* FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
@@ -79,12 +75,10 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	{
 		vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		//printf("%s\n", &FragmentShaderErrorMessage[0]);
 		cerr << &FragmentShaderErrorMessage[0] << endl;
 	}
 	
 	// Link the program
-	//printf("Linking program\n");
 	cout << "Linking program" << endl;
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, VertexShaderID);
@@ -94,13 +88,15 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	// Check the program
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0)
+	if (InfoLogLength > 1)
 	{
 		vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 		//printf("%s\n", &ProgramErrorMessage[0]);
 		cerr << &ProgramErrorMessage[0] << endl;
 	}
+
+	cout << endl;
 
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
@@ -116,6 +112,11 @@ Shader::Shader(GLuint program)
 Shader::Shader(const char* vertex_file_path, const char* fragment_file_path)
 {
 	id = LoadShaders(vertex_file_path, fragment_file_path);
+}
+
+GLuint Shader::getID()
+{
+	return id;
 }
 
 void Shader::uniform1i(int i, string name)
@@ -177,4 +178,19 @@ Point_Light::Point_Light(vec3 position, vec4 color)
 	this->position = position;
 	this->color = color;
 	initDepthBuffers();
+}
+
+void Point_Light::initDepthBuffers()
+{
+
+}
+
+GLuint Point_Light::getFramebufferID()
+{
+	return framebuffer;
+}
+
+GLuint Point_Light::getTextureID()
+{
+	return depthCubeTexture;
 }

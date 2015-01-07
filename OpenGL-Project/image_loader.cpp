@@ -1,10 +1,14 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 #include <GL/glew.h>
 #include <FreeImage.h>
 
 #include "image_loader.h"
+
+vector<string> loadedpaths;
+vector<GLuint> loadedIDs;
 
 GLuint decodeTexture2D()
 {
@@ -13,6 +17,15 @@ GLuint decodeTexture2D()
 
 GLuint loadTexture2D(const char* filename)
 {
+	for (unsigned int i = 0; i < loadedpaths.size(); i++)
+	{
+		if (string(filename) == loadedpaths[i])
+		{
+			cout << "Found texture: " << filename << endl;
+			return loadedIDs[i];
+		}
+	}
+
 	FREE_IMAGE_FORMAT format;
 	FIBITMAP* image = 0;
 
@@ -54,6 +67,10 @@ GLuint loadTexture2D(const char* filename)
 
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, imgFormat, GL_UNSIGNED_BYTE, pixels);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, imgFormat, GL_UNSIGNED_BYTE, DataPointer);
+
+	loadedpaths.push_back(string(filename));
+	loadedIDs.push_back(textureID);
+
 	return textureID;
 }
 

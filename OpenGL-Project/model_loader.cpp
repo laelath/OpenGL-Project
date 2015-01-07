@@ -17,8 +17,8 @@ using namespace glm;
 #include "image_loader.h"
 #include "model_loader.h"
 
-vector<string> loadedpaths;
-vector<GLuint> loadedtextures;
+//vector<string> loadedpaths;
+//vector<GLuint> loadedtextures;
 
 GLuint model_vao;
 
@@ -126,30 +126,41 @@ bool load3DFromFile(const char* path, model* lmodel)
 		GLuint texture = 0;
 		if (texname != "")
 		{
-			string texloadpath = string(path).substr(0, (string(path).find_last_of("/")) + 1) + texname;
+			string stringpath = string(path);
+			stringpath = stringpath.substr(0, stringpath.find_last_of("/") + 1);
 
-			bool isfound = false;
-			for (unsigned int j = 0; j < loadedpaths.size(); j++)
+			while (texname.find("../") != -1)
 			{
-				if (texname == loadedpaths[j])
-				{
-					texture = loadedtextures[j];
-					isfound = true;
-				}
+				texname = texname.substr(3);
+				stringpath = stringpath.substr(0, stringpath.find_last_of("/", stringpath.find_last_of("/") - 1) + 1);
 			}
+			
+			string texloadpath = stringpath + texname;
 
-			if (isfound == false)
-			{
+			//bool isfound = false;
+			//for (unsigned int j = 0; j < loadedpaths.size(); j++)
+			//{
+				//if (texname == loadedpaths[j])
+				//{
+				//	texture = loadedtextures[j];
+				//	isfound = true;
+				//}
+			//}
+
+			//if (isfound == false)
+			//{
 				texture = loadTexture2D(texloadpath.c_str());
 
-				loadedpaths.push_back(texloadpath);
-				loadedtextures.push_back(texture);
-			}
+				//loadedpaths.push_back(texloadpath);
+				//loadedtextures.push_back(texture);
+			//}
 		}
 
 		material.texture = texture;
 		lmodel->materials.push_back(material);
 	}
+
+	cout << endl;
 
 	return true;
 }

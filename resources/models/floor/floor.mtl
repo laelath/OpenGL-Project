@@ -6,4 +6,4 @@ newmtl checkerboard
 	Ka 0.6902 0.6902 0.6902
 	Kd 0.6902 0.6902 0.6902
 	Ks 0.8500 0.8500 0.8500
-	map_Kd checkerboard.png
+	map_Kd ../../textures/checkerboard.png

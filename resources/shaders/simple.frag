@@ -48,11 +48,15 @@ const vec2 poissonDisk[16] = vec2[](
    vec2( 0.14383161, -0.14100790 ) 
 );
 
-const vec2 edgeTestDisk[4] = vec2[](
+const vec2 edgeTestDisk[8] = vec2[](
 	vec2(-1.0, -1.0),
 	vec2( 1.0, -1.0),
 	vec2(-1.0,  1.0),
-	vec2( 1.0,  1.0)
+	vec2( 1.0,  1.0),
+	vec2( 1.414, 0.0),
+	vec2(-1.414, 0.0),
+	vec2(0.0,  1.414),
+	vec2(0.0, -1.414)
 );
 
 void main()
@@ -65,12 +69,12 @@ void main()
 	vec3 light_direction = (modelView * vec4(lit.direction, 0)).xyz;
 	
 	float cosTheta = clamp(dot(normal, light_direction), 0, 1);
-	float bias = clamp(10 / tan(acos(cosTheta) / depth_resolution), 0.0, 0.0075);
+	float bias = clamp(10 * tan(acos(cosTheta)) / depth_resolution, 0.0, 0.01);
 	float visibility = 0;
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		visibility += 0.25 * texture(depth_texture, vec3(shadowCoord.xy + 2 * edgeTestDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
+		visibility += 0.125 * texture(depth_texture, vec3(shadowCoord.xy + 2.5 * edgeTestDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
 	}
 
 	if (visibility != 1.0 && visibility != 0.0)
@@ -78,7 +82,7 @@ void main()
 		visibility = 0.0;
 		for (int i = 0; i < 16; i++)
 		{
-			visibility += 0.0625 * texture(depth_texture, vec3(shadowCoord.xy + 2 * poissonDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
+			visibility += 0.0625 * texture(depth_texture, vec3(shadowCoord.xy + 2.5 * poissonDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
 		}
 	}
 	

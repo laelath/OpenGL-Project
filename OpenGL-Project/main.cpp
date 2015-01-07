@@ -18,7 +18,7 @@ using namespace glm;
 #include "image_loader.h"
 
 //vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
-vec3 ambient_model = vec3(0.15f, 0.2f, 0.25f);
+vec3 ambient_model = vec3(0.1f, 0.15f, 0.2f);
 
 int main()
 {
@@ -121,7 +121,7 @@ int main()
 		0.5, 0.5, 0.5, 1.0
 		);
 
-	vec3 lightDirection = vec3(1.0, 1.0, 1.0);
+	vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
 	vec4 lightColor = vec4(0.8, 0.7, 0.5, 1.0);
 
 	//END OF TEMP CODE *****************************************************************************************************************************************************************************
@@ -146,7 +146,7 @@ int main()
 		mat4 depthModel = mat4(1.0f);
 		mat4 depthModelViewProjection = depthProjection * depthView * depthModel;
 
-		glUseProgram(depthProgram.id);
+		glUseProgram(depthProgram.getID());
 
 		depthProgram.uniformMatrix4f(depthModelViewProjection, "modelViewProjection");
 		
@@ -180,7 +180,7 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(program.id);
+		glUseProgram(program.getID());
 
 		program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
 		program.uniformMatrix4f(modelView, "modelView");

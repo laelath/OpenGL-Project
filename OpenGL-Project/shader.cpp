@@ -110,7 +110,7 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 
 Shader::Shader(GLuint program)
 {
-	this->id = program;
+	id = program;
 }
 
 Shader::Shader(const char* vertex_file_path, const char* fragment_file_path)
@@ -154,11 +154,27 @@ void Shader::uniformMatrix4f(mat4 mat, string name)
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::uniformLight(light l, string name)
+void Shader::uniformLight(Point_Light l, string name)
 {
 	int ploc = glGetUniformLocation(id, (name + ".position").c_str());
 	glUniform3fv(ploc, 1, &l.position[0]);
 
 	int cloc = glGetUniformLocation(id, (name + ".color").c_str());
 	glUniform4fv(cloc, 1, &l.color[0]);
+}
+
+
+
+Point_Light::Point_Light()
+{
+	position = vec3();
+	color = vec4();
+	initDepthBuffers();
+}
+
+Point_Light::Point_Light(vec3 position, vec4 color)
+{
+	this->position = position;
+	this->color = color;
+	initDepthBuffers();
 }

@@ -12,8 +12,11 @@ struct direc_light
 };
 
 uniform material mat;
+
 uniform direc_light lit;
 uniform sampler2DShadow depth_texture;
+uniform int depth_resolution;
+
 uniform vec3 ambient_model;
 
 uniform mat4 modelView;
@@ -62,12 +65,12 @@ void main()
 	vec3 light_direction = (modelView * vec4(lit.direction, 0)).xyz;
 	
 	float cosTheta = clamp(dot(normal, light_direction), 0, 1);
-	float bias = clamp(tan(acos(cosTheta)), 0.002, 0.05);
+	float bias = clamp(10 / tan(acos(cosTheta) / depth_resolution), 0.0, 0.0075);
 	float visibility = 0;
 
 	for (int i = 0; i < 4; i++)
 	{
-		visibility += 0.25 * texture(depth_texture, vec3(shadowCoord.xy + edgeTestDisk[i] / 1000.0, (shadowCoord.z - bias) / shadowCoord.w));
+		visibility += 0.25 * texture(depth_texture, vec3(shadowCoord.xy + 2 * edgeTestDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
 	}
 
 	if (visibility != 1.0 && visibility != 0.0)
@@ -75,7 +78,7 @@ void main()
 		visibility = 0.0;
 		for (int i = 0; i < 16; i++)
 		{
-			visibility += 0.0625 * texture(depth_texture, vec3(shadowCoord.xy + poissonDisk[i] / 1000.0, (shadowCoord.z - bias) / shadowCoord.w));
+			visibility += 0.0625 * texture(depth_texture, vec3(shadowCoord.xy + 2 * poissonDisk[i] / depth_resolution, (shadowCoord.z - bias) / shadowCoord.w));
 		}
 	}
 	

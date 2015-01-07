@@ -18,7 +18,7 @@ using namespace glm;
 #include "image_loader.h"
 
 //vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
-vec3 ambient_model = vec3(0.2f, 0.25f, 0.3f);
+vec3 ambient_model = vec3(0.15f, 0.2f, 0.25f);
 
 int main()
 {
@@ -89,9 +89,10 @@ int main()
 	load3DFromFile("../resources/models/trashcan/trashbin.obj", &trashbin);
 	load3DFromFile("../resources/models/floor/floor.obj", &floor);
 
-	light lit;
-	lit.position = vec3(-20, 100, 0);
-	lit.color = vec4(1.0, 0.9, 0.7, 150);
+	Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 150));
+	//point_light lit;
+	//lit.position = vec3(-20, 100, 0);
+	//lit.color = vec4(1.0, 0.9, 0.7, 150);
 
 	//TEMP CODE ************************************************************************************************************************************************************************************
 
@@ -172,7 +173,10 @@ int main()
 
 		mat4 modelView = view * model;
 		mat4 modelViewProjection = projection * view * model;
+
+		//
 		mat4 depthBiasModelViewProjection = biasMatrix * depthModelViewProjection;
+		//
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -183,11 +187,13 @@ int main()
 		program.uniformLight(lit, "light[0]");
 		program.uniform3f(ambient_model, "ambient_model");
 
+		//
 		program.uniformMatrix4f(depthBiasModelViewProjection, "depthBiasMVP");
 
-		//
 		program.uniform3f(lightDirection, "lit.direction");
 		program.uniform4f(lightColor, "lit.color");
+
+		program.uniform1i(shadowResolution, "depth_resolution");
 		//
 
 		glActiveTexture(GL_TEXTURE1);

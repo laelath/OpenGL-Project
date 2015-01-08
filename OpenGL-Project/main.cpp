@@ -100,7 +100,7 @@ int main()
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-	unsigned int shadowResolution = 2048;
+	unsigned int shadowResolution = 8192;
 
 	GLuint depthTexture;
 	glGenTextures(1, &depthTexture);

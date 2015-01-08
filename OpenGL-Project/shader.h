@@ -9,6 +9,11 @@
 
 };*/
 
+class Light
+{
+
+};
+
 class Point_Light
 {
 public:

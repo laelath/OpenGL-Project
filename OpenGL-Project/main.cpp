@@ -90,6 +90,7 @@ int main()
 	load3DFromFile("../resources/models/floor/floor.obj", &floor);
 
 	Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 150));
+	Directional_Light dlit(vec3(1.0, 1.0, 1.0), vec4(0.8, 0.7, 0.5, 1.0));
 	//point_light lit;
 	//lit.position = vec3(-20, 100, 0);
 	//lit.color = vec4(1.0, 0.9, 0.7, 150);
@@ -143,8 +144,7 @@ int main()
 
 		mat4 depthProjection = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
 		mat4 depthView = lookAt(lightDirection, vec3(0, 0, 0), vec3(0, 1, 0));
-		mat4 depthModel = mat4(1.0f);
-		mat4 depthModelViewProjection = depthProjection * depthView * depthModel;
+		mat4 depthModelViewProjection = depthProjection * depthView;
 
 		glUseProgram(depthProgram.getID());
 

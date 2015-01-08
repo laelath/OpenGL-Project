@@ -11,32 +11,54 @@
 
 class Light
 {
-
-};
-
-class Point_Light
-{
 public:
-	Point_Light();
-	Point_Light(vec3 position, vec4 color);
-
-	vec3 position;
 	vec4 color;
+
+	mat4 viewMatrix;
 
 	GLuint getFramebufferID();
 	GLuint getTextureID();
 
-private:
-	GLuint framebuffer;
-	GLuint depthCubeTexture;
+	virtual void updateMatrices() = 0;
 
+protected:
+	GLuint framebufferID, depthTextureID;
+
+	virtual void initDepthBuffers() = 0;
+
+	Light(vec4 color);
+};
+
+class Point_Light: public Light
+{
+public:
+	vec3 position;
+
+	mat4 projectionMatrices[6];
+
+	Point_Light();
+	Point_Light(vec3 position, vec4 color);
+
+	void updateMatrices();
+
+private:
 	void initDepthBuffers();
 };
 
-class Directional_Light
+class Directional_Light: public Light
 {
 public:
+	vec3 direction;
 
+	mat4 projectionMatrix;
+
+	Directional_Light();
+	Directional_Light(vec3 direction, vec4 color);
+
+	void updateMatrices();
+
+private:
+	void initDepthBuffers();
 };
 
 

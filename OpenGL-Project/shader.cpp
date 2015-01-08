@@ -11,6 +11,8 @@ using namespace glm;
 
 #include "shader.h"
 
+const unsigned int shadowResolution = 8192;
+
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
 {
 
@@ -166,18 +168,38 @@ void Shader::uniformLight(Point_Light l, string name)
 
 
 
-Point_Light::Point_Light()
+Light::Light(vec4 color)
 {
-	position = vec3();
-	color = vec4();
+	this->color = color;
 	initDepthBuffers();
 }
 
+GLuint Light::getFramebufferID()
+{
+	return framebufferID;
+}
+
+GLuint Light::getTextureID()
+{
+	return depthTextureID;
+}
+
+
+Point_Light::Point_Light()
+	:Light(vec4())
+{
+	position = vec3();
+}
+
 Point_Light::Point_Light(vec3 position, vec4 color)
+	: Light(color)
 {
 	this->position = position;
-	this->color = color;
-	initDepthBuffers();
+}
+
+void Point_Light::updateMatrices()
+{
+
 }
 
 void Point_Light::initDepthBuffers()
@@ -185,12 +207,37 @@ void Point_Light::initDepthBuffers()
 
 }
 
-GLuint Point_Light::getFramebufferID()
+
+Directional_Light::Directional_Light()
+	:Light(vec4())
 {
-	return framebuffer;
+	direction = vec3(0,1,0);
 }
 
-GLuint Point_Light::getTextureID()
+Directional_Light::Directional_Light(vec3 direction, vec4 color)
+	: Light(color)
 {
-	return depthCubeTexture;
+	this->direction = normalize(direction);
+}
+
+void Directional_Light::updateMatrices()
+{
+
+}
+
+void Directional_Light::initDepthBuffers()
+{
+	glGenFramebuffers(1, &framebufferID);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
+
+	glGenTextures(1, &depthTextureID);
+	glBindTexture(GL_TEXTURE_2D, depthTextureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, shadowResolution, shadowResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTextureID, 0);
+	glDrawBuffer(GL_NONE);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cerr << "Error creating directional light framebuffer." << endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

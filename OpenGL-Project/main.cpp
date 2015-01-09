@@ -95,13 +95,13 @@ int main()
 	//lit.position = vec3(-20, 100, 0);
 	//lit.color = vec4(1.0, 0.9, 0.7, 150);
 
-	//TEMP CODE ************************************************************************************************************************************************************************************
+	/*/TEMP CODE ************************************************************************************************************************************************************************************
 
 	GLuint framebuffer;
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-	unsigned int shadowResolution = 8192;
+	//unsigned int shadowResolution = 8192;
 
 	GLuint depthTexture;
 	glGenTextures(1, &depthTexture);
@@ -114,6 +114,7 @@ int main()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cerr << "Error creating framebuffer." << endl;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//*/
 
 	mat4 biasMatrix(
 		0.5, 0.0, 0.0, 0.0,
@@ -122,8 +123,8 @@ int main()
 		0.5, 0.5, 0.5, 1.0
 		);
 
-	vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
-	vec4 lightColor = vec4(0.8, 0.7, 0.5, 1.0);
+	//vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
+	//vec4 lightColor = vec4(0.8, 0.7, 0.5, 1.0);
 
 	//END OF TEMP CODE *****************************************************************************************************************************************************************************
 
@@ -131,7 +132,8 @@ int main()
 	{
 		computeMatrices(window);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		//glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, dlit.getFramebufferID());
 
 		glViewport(0, 0, shadowResolution, shadowResolution);
 
@@ -139,16 +141,19 @@ int main()
 
 		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
 		{
-			lightDirection = normalize(getPlayerPos());
+			//lightDirection = normalize(getPlayerPos());
+			dlit.direction = normalize(getPlayerPos());
+			dlit.updateMatrices();
 		}
 
-		mat4 depthProjection = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
-		mat4 depthView = lookAt(lightDirection, vec3(0, 0, 0), vec3(0, 1, 0));
-		mat4 depthModelViewProjection = depthProjection * depthView;
+		//mat4 depthProjection = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
+		//mat4 depthView = lookAt(lightDirection, vec3(0,0,0), vec3(0,1,0));
+		//mat4 depthModelViewProjection = depthProjection * depthView;
 
 		glUseProgram(depthProgram.getID());
 
-		depthProgram.uniformMatrix4f(depthModelViewProjection, "modelViewProjection");
+		//depthProgram.uniformMatrix4f(depthModelViewProjection, "modelViewProjection");
+		depthProgram.uniformMatrix4f(dlit.getProjectionMatrix() * dlit.getViewMatrix(), "modelViewProjection");
 		
 		glBindVertexArray(model_vao);
 
@@ -175,7 +180,8 @@ int main()
 		mat4 modelViewProjection = projection * view * model;
 
 		//
-		mat4 depthBiasModelViewProjection = biasMatrix * depthModelViewProjection;
+		//mat4 depthBiasModelViewProjection = biasMatrix * depthModelViewProjection;
+		mat4 depthBiasModelViewProjection = biasMatrix *dlit.getViewProjectionMatrix();
 		//
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,8 +196,10 @@ int main()
 		//
 		program.uniformMatrix4f(depthBiasModelViewProjection, "depthBiasMVP");
 
-		program.uniform3f(lightDirection, "lit.direction");
-		program.uniform4f(lightColor, "lit.color");
+		//program.uniform3f(lightDirection, "lit.direction");
+		//program.uniform4f(lightColor, "lit.color");
+		program.uniform3f(dlit.direction, "lit.direction");
+		program.uniform4f(dlit.color, "lit.color");
 
 		program.uniform1i(shadowResolution, "depth_resolution");
 		//
@@ -199,7 +207,8 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindSampler(1, shadow_sampler);
 
-		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		//glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glBindTexture(GL_TEXTURE_2D, dlit.getTextureID());
 		program.uniform1i(1, "depth_texture");
 
 		glActiveTexture(GL_TEXTURE0);

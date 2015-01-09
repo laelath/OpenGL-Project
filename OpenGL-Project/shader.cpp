@@ -7,15 +7,13 @@ using namespace std;
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
 #include "shader.h"
 
-const unsigned int shadowResolution = 8192;
-
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
 {
-
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -94,7 +92,6 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	{
 		vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		//printf("%s\n", &ProgramErrorMessage[0]);
 		cerr << &ProgramErrorMessage[0] << endl;
 	}
 
@@ -171,30 +168,42 @@ void Shader::uniformLight(Point_Light l, string name)
 Light::Light(vec4 color)
 {
 	this->color = color;
-	initDepthBuffers();
 }
 
-GLuint Light::getFramebufferID()
+
+GLuint Shadow_Light::getFramebufferID()
 {
 	return framebufferID;
 }
 
-GLuint Light::getTextureID()
+GLuint Shadow_Light::getTextureID()
 {
 	return depthTextureID;
+}
+
+mat4 Shadow_Light::getViewMatrix()
+{
+	return viewMatrix;
 }
 
 
 Point_Light::Point_Light()
 	:Light(vec4())
 {
+	initDepthBuffers();
 	position = vec3();
 }
 
 Point_Light::Point_Light(vec3 position, vec4 color)
 	: Light(color)
 {
+	initDepthBuffers();
 	this->position = position;
+}
+
+mat4 Point_Light::getProjectionMatrix(int index)
+{
+	return projectionMatrices[index];
 }
 
 void Point_Light::updateMatrices()
@@ -209,20 +218,36 @@ void Point_Light::initDepthBuffers()
 
 
 Directional_Light::Directional_Light()
-	:Light(vec4())
+	: Light(vec4())
 {
+	initDepthBuffers();
 	direction = vec3(0,1,0);
+	updateMatrices();
 }
 
 Directional_Light::Directional_Light(vec3 direction, vec4 color)
 	: Light(color)
 {
+	initDepthBuffers();
 	this->direction = normalize(direction);
+	updateMatrices();
+}
+
+mat4 Directional_Light::getProjectionMatrix()
+{
+	return projectionMatrix;
+}
+
+mat4 Directional_Light::getViewProjectionMatrix()
+{
+	return viewProjectionMatrix;
 }
 
 void Directional_Light::updateMatrices()
 {
-
+	projectionMatrix = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
+	viewMatrix = lookAt(direction, vec3(0,0,0), vec3(0,1,0));
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
 void Directional_Light::initDepthBuffers()

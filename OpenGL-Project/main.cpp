@@ -18,7 +18,7 @@ using namespace glm;
 #include "image_loader.h"
 
 //vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
-vec3 ambient_model = vec3(0.1f, 0.15f, 0.2f);
+vec3 ambient_model = vec3(0.08f, 0.11f, 0.14f);
 
 int main()
 {
@@ -198,7 +198,7 @@ int main()
 
 		//program.uniform3f(lightDirection, "lit.direction");
 		//program.uniform4f(lightColor, "lit.color");
-		program.uniform3f(dlit.direction, "lit.direction");
+		program.uniform3f((vec4(dlit.direction, 0) * modelView).xyz, "lit.direction");
 		program.uniform4f(dlit.color, "lit.color");
 
 		program.uniform1i(shadowResolution, "depth_resolution");

@@ -14,6 +14,17 @@ struct directional_light
 	sampler2DShadow depth_texture;
 };
 
+struct spot_light
+{
+	vec3 position;
+	vec3 direction;
+	vec4 color;
+	
+	float cosLimit;
+
+	sampler2DShadow depth_texture;
+};
+
 struct material
 {
 	vec3 diffuse;
@@ -25,12 +36,15 @@ struct material
 	sampler2D texture;
 };
 
-const int max_lights = 1;
+const int max_point_lights = 1;
+const int max_directional_lights = 1;
+const int max_spot_lights = 0;
 
 uniform material mat;
 
-uniform point_light plight[max_lights];
-uniform directional_light dlight[max_lights];
+uniform point_light pointLight[max_point_lights];
+uniform directional_light directionalLight[max_directional_lights];
+uniform spot_light spotLight[max_spot_lights]
 
 uniform vec3 ambient_model;
 
@@ -50,12 +64,12 @@ void main()
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
 	
-	for (int i = 0; (i < max_lights) && (plight[i].color.a != 0); i++)
+	for (int i = 0; (i < max_point_lights) && (pointLight[i].color.a != 0); i++)
 	{
-		vec3 light_position = (modelView * vec4(plight[i].position, 1)).xyz;
+		vec3 light_position = (modelView * vec4(pointLight[i].position, 1)).xyz;
 		vec3 light_direction = normalize(light_position - position);
 		float light_distance = distance(position, light_position);
-		float distance_intensity = plight[i].color.a / light_distance /*pow(light_distance, 2.0)*/;
+		float distance_intensity = pointLight[i].color.a * pow(light_distance, -1.0);
 		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
 		diffuse_level += diffuse_intensity * light[i].color.rgb;
 		
@@ -77,22 +91,37 @@ void main()
 	frag_color.a = diffuse_texture.a * mat.opacity;
 }
 
-vec3 calculateDiffuseLighting(point_light light)
+vec3 diffuseLighting(const point_light light)
+{
+	vec3 light_position = (modelView * vec4(light.position, 1)).xyz;
+	vec3 light_direction = normalize(light_position - position);
+	float light_distance = distance(position, light_position);
+	float distance_intensity = light.color.a * pow(light_distance, -1.0);
+	float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
+	return diffuse_intensity * light.color.rgb;
+}
+
+vec3 diffuseLighting(const directional_light light)
 {
 	
 }
 
-vec3 calculateSpecularLighting(point_light light)
+vec3 diffuseLighting(const spot_light light)
 {
 	
 }
 
-vec3 calculateDiffuseLighting(directional_light light)
+vec3 specularLighting(const point_light light, vec3 view_direction)
 {
 	
 }
 
-vec3 calculateSpecularLighting(directional_light light)
+vec3 specularLighting(const directional_light light, vec3 view_direction)
+{
+	
+}
+
+vec3 specularLighting(const spot_light light, vec3 view_direction)
 {
 	
 }

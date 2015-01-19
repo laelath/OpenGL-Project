@@ -9,7 +9,7 @@
 
 };*/
 
-const unsigned int shadowResolution = 4096;
+const unsigned int shadowResolution = 2048;
 
 class Light
 {

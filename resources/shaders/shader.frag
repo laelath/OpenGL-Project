@@ -91,11 +91,9 @@ void main()
 	frag_color.a = diffuse_texture.a * mat.opacity;
 }
 
-vec3 diffuseLighting(const point_light light)
+vec3 diffuseLighting(const point_light light, vec3 light_direction)
 {
-	vec3 light_position = (modelView * vec4(light.position, 1)).xyz;
-	vec3 light_direction = normalize(light_position - position);
-	float light_distance = distance(position, light_position);
+	float light_distance = distance(position, light.position);
 	float distance_intensity = light.color.a * pow(light_distance, -1.0);
 	float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
 	return diffuse_intensity * light.color.rgb;
@@ -103,15 +101,16 @@ vec3 diffuseLighting(const point_light light)
 
 vec3 diffuseLighting(const directional_light light)
 {
-	
+	float diffuse_intensity = max (0.0, dot(normal, light.direction));
+	return diffuse_intensity * light.color.rgb;
 }
 
-vec3 diffuseLighting(const spot_light light)
+vec3 diffuseLighting(const spot_light light, vec3 light_direction)
 {
-	
+	float light_distance = distance(position, light.position);
 }
 
-vec3 specularLighting(const point_light light, vec3 view_direction)
+vec3 specularLighting(const point_light light, vec3 light_direction, vec3 view_direction)
 {
 	
 }
@@ -121,7 +120,7 @@ vec3 specularLighting(const directional_light light, vec3 view_direction)
 	
 }
 
-vec3 specularLighting(const spot_light light, vec3 view_direction)
+vec3 specularLighting(const spot_light light, vec3 light_direction, vec3 view_direction)
 {
 	
 }

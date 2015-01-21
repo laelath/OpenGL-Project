@@ -66,9 +66,9 @@ void main()
 	vec3 diffuse_color = vec3(0);
 	vec3 specular_color = vec3(0);
 	
-	vec3 light_direction = (modelView * vec4(lit.direction, 0)).xyz;
+	//vec3 light_direction = (modelView * vec4(lit.direction, 0)).xyz;
 	
-	float cosTheta = clamp(dot(normal, light_direction), 0, 1);
+	float cosTheta = clamp(dot(normal, lit.direction), 0, 1);
 	float bias = clamp(10 * tan(acos(cosTheta)) / depth_resolution, 0.0, 0.01);
 	float visibility = 0;
 
@@ -88,10 +88,10 @@ void main()
 	
 	if (visibility != 0.0)
 	{
-		diffuse_color = texture_color.rgb * lit.color.rgb * max(0.0, dot(normal, light_direction));
+		diffuse_color = texture_color.rgb * lit.color.rgb * max(0.0, dot(normal, lit.direction));
 		
 		vec3 view_direction = normalize(position);
-		vec3 reflection_direction = normalize(reflect(light_direction, normal));
+		vec3 reflection_direction = normalize(reflect(lit.direction, normal));
 		float specular = max(0.0, dot(view_direction, reflection_direction));
 		float fspecular = pow(specular, 25);
 		specular_color = lit.color.rgb * fspecular;

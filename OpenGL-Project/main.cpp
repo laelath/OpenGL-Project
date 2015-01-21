@@ -7,6 +7,7 @@ using namespace std;
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
+#define GLM_SWIZZLE
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -198,7 +199,7 @@ int main()
 
 		//program.uniform3f(lightDirection, "lit.direction");
 		//program.uniform4f(lightColor, "lit.color");
-		program.uniform3f((vec4(dlit.direction, 0) * modelView).xyz, "lit.direction");
+		program.uniform3f((modelView * vec4(dlit.direction, 0)).xyz, "lit.direction");
 		program.uniform4f(dlit.color, "lit.color");
 
 		program.uniform1i(shadowResolution, "depth_resolution");

@@ -50,6 +50,9 @@ dlldata.c
 *.idb
 *.tlog
 *.exe
+*.command
+*.read
+*.write
 
 # Chutzpah Test files
 _Chutzpah*
@@ -220,3 +223,6 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.tlog
+*.idb
+OpenGL-Project/Debug/vc120.idb

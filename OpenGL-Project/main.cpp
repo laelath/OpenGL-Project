@@ -14,6 +14,7 @@ using namespace std;
 using namespace glm;
 
 #include "shader.h"
+#include "light.h"
 #include "controls.h"
 #include "model_loader.h"
 #include "image_loader.h"
@@ -60,10 +61,10 @@ int main()
 	glCullFace(GL_BACK);
 	glClearColor(ambient_model.r, ambient_model.g, ambient_model.b, 0.1f);
 
-	//Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
+	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
 	//TESTING SHADERS
-	Shader program("../resources/shaders/shader.vert", "../resources/shaders/simple.frag");
-	Shader texturepass("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
+	//Shader program("../resources/shaders/shader.vert", "../resources/shaders/simple.frag");
+	//Shader texturepass("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
 	Shader depthProgram("../resources/shaders/depth.vert", "../resources/shaders/depth.frag");
 	//
 
@@ -117,12 +118,12 @@ int main()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//*/
 
-	mat4 biasMatrix(
+	/*mat4 biasMatrix(
 		0.5, 0.0, 0.0, 0.0,
 		0.0, 0.5, 0.0, 0.0,
 		0.0, 0.0, 0.5, 0.0,
 		0.5, 0.5, 0.5, 1.0
-		);
+	);*/
 
 	//vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
 	//vec4 lightColor = vec4(0.8, 0.7, 0.5, 1.0);

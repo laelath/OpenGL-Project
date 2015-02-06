@@ -4,6 +4,8 @@ struct point_light
 {
 	vec3 position;
 	vec4 color;
+
+	//samplerCubeShadow depth_texture;
 };
 
 struct directional_light
@@ -11,6 +13,7 @@ struct directional_light
 	vec3 direction;
 	vec4 color;
 
+	mat4 projectionBiasMatrix;
 	sampler2DShadow depth_texture;
 };
 
@@ -22,7 +25,7 @@ struct spot_light
 	
 	float cosLimit;
 
-	sampler2DShadow depth_texture;
+	//sampler2DShadow depth_texture;
 };
 
 struct material
@@ -48,8 +51,6 @@ uniform spot_light spotLight[max_spot_lights]
 
 uniform vec3 ambient_model;
 
-uniform mat4 modelView;
-
 in vec3 position;
 in vec2 texCoord;
 in vec3 normal;
@@ -63,22 +64,47 @@ void main()
 	vec3 diffuse_level = vec3(0,0,0);
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
-	
+
 	for (int i = 0; (i < max_point_lights) && (pointLight[i].color.a != 0); i++)
 	{
-		vec3 light_position = (modelView * vec4(pointLight[i].position, 1)).xyz;
-		vec3 light_direction = normalize(light_position - position);
-		float light_distance = distance(position, light_position);
-		float distance_intensity = pointLight[i].color.a * pow(light_distance, -1.0);
-		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
-		diffuse_level += diffuse_intensity * light[i].color.rgb;
+		vec3 light_direction = normalize(pointLight[i].position - position);
+		vec3 light_diffuse = diffuseLevel(pointLight[i], light_direction);
+		diffuse_level += light_diffuse;
 		
-		if (diffuse_intensity > 0.0)
+		if (light_diffuse > 0.0)
 		{
-			vec3 reflection_direction = normalize(reflect(light_direction, normal));
-			float specular = max(0.0, dot(view_direction, reflection_direction));
-			float fspecular = pow(specular, mat.shininess);
-			specular_level += fspecular * light[i].color.rgb;
+			specular_level += specularLevel(pointLight[i], light_direction, view_direction);
+		}
+	}
+
+	for (int i = 0; i < max_directional_lights; i++)
+	{
+		vec4 shadowCoord = vec4(position, 1) * directionalLight[i].projectionBiasMatrix;
+		float cosTheta = clamp(dot(normal, directionalLight[i].direction), 0, 1);
+		float bias = clamp(10 * tan(acos(cosTheta)) / depth_resolution, 0.0, 0.01);
+		float visibility = texture(depth_texture, vec3(shadowCoord.xy, (shadowCoord.z - bias) / shadowCoord.w));
+
+		if (visibility != 0.0)
+		{
+			vec3 light_diffuse = diffuseLevel(directionalLight[i]);
+			diffuse_level += light_diffuse;
+			
+			if (light_diffuse > 0.0)
+			{
+				specular_level += specularLevel(directionalLight[i], view_direction);
+			}
+		}
+	}
+
+	for (int i = 0; i < max_spot_lights; i++)
+	{
+		vec3 light_direction = normalize(spotLight[i].position - position);
+		vec3 light_diffuse = diffuseLevel(spotLight[i], light_direction);
+		diffuse_level += light_diffuse;
+
+		if (light_diffuse > 0.0)
+		{
+			specular_level += specularLevel(spotLight[i], light_direction, view_direction);
 		}
 	}
 
@@ -96,31 +122,48 @@ vec3 diffuseLighting(const point_light light, vec3 light_direction)
 	float light_distance = distance(position, light.position);
 	float distance_intensity = light.color.a * pow(light_distance, -1.0);
 	float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity;
-	return diffuse_intensity * light.color.rgb;
+	return light.color.rgb * diffuse_intensity;
 }
 
 vec3 diffuseLighting(const directional_light light)
 {
 	float diffuse_intensity = max (0.0, dot(normal, light.direction));
-	return diffuse_intensity * light.color.rgb;
+	return light.color.rgb diffuse_intensity;
 }
 
 vec3 diffuseLighting(const spot_light light, vec3 light_direction)
 {
-	float light_distance = distance(position, light.position);
+	float cosValue = max(0.0, dot(light.direction, light_direction));
+	if (cosValue >= light.cosLimit)
+	{
+		float light_distance = distance(position, light.position);
+		float distance_intensity = light.color.a * pow(light_distance, -1.0);
+		float diffuse_intensity = max(0.0, dot(normal, light_direction)) * distance_intensity * cosValue;
+		return light.color.rgb * diffuse_intensity;
+	}
+	return vec3(0);
 }
 
 vec3 specularLighting(const point_light light, vec3 light_direction, vec3 view_direction)
 {
-	
+	vec3 reflection_direction = normalize(reflect(light_direction, normal));
+	float specular = max(0.0, dot(view_direction, reflection_direction));
+	float fspecular = pow(specular, mat.shininess);
+	return light.color.rgb * fspecular;
 }
 
 vec3 specularLighting(const directional_light light, vec3 view_direction)
 {
-	
+	vec3 reflection_direction = normalize(reflect(light.direction, normal));
+	float specular = max(0.0, dot(view_direction, reflection_direction));
+	float fspecular = pow(specular, mat.shininess);
+	return light.color.rgb * fspecular;
 }
 
 vec3 specularLighting(const spot_light light, vec3 light_direction, vec3 view_direction)
 {
-	
+	vec3 reflection_direction = normalize(reflect(light_direction, normal));
+	float specular = max(0.0, dot(view_direction, reflection_direction));
+	float fspecular = pow(specular, mat.shininess);
+	return light.color.rgb * fspecular;
 }

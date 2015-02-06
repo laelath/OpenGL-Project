@@ -13,12 +13,14 @@
   <ItemGroup>
     <ClInclude Include="controls.h" />
     <ClInclude Include="image_loader.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="model_loader.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="controls.cpp" />
     <ClCompile Include="image_loader.cpp" />
+    <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model_loader.cpp" />
     <ClCompile Include="shader.cpp" />

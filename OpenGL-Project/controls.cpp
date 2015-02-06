@@ -74,7 +74,7 @@ void computeMatrices(GLFWwindow* window)
 		verticalAngle -= mouseSpeed * float(ypos);
 	}
 	
-	float verticalLimit = radians(90.0f);
+	float verticalLimit = radians(89.999f);
 
 	if (verticalAngle > verticalLimit)
 	{
@@ -97,8 +97,10 @@ void computeMatrices(GLFWwindow* window)
 	}
 
 	vec3 direction(cos(verticalAngle) * sin(horizontalAngle), sin(verticalAngle), -cos(verticalAngle) * cos(horizontalAngle));
-	vec3 left = vec3(sin(horizontalAngle + M_PI_2), 0, cos(horizontalAngle - M_PI_2));
-	vec3 up = cross(left, direction);
+	//vec3 right = vec3(sin(horizontalAngle + M_PI_2), 0, cos(horizontalAngle - M_PI_2));
+	//vec3 up = cross(right, direction);
+	vec3 up = vec3(0, 1, 0);
+	vec3 right = cross(direction, up);
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
@@ -122,12 +124,12 @@ void computeMatrices(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		position += left * deltaTime * speed;
+		position += right * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		position -= left * deltaTime * speed;
+		position -= right * deltaTime * speed;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
@@ -143,13 +145,12 @@ void computeMatrices(GLFWwindow* window)
 	float FoV = initialFoV;
 
 	ProjectionMatrix = perspective(radians(FoV), float(width) / float(height), 0.1f, 100000.0f);
-	//ProjectionMatrix = ortho(-float(width) * 0.25f, float(width) * 0.25f, -float(height) * 0.25f, float(height) * 0.25f, 1000.0f, -1000.0f);
 	ViewMatrix = lookAt(position, position + direction, up);
 	
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		cout << position.x << ", " << position.y << ", " << position.z << endl;
-		cout << direction.x << ", " << direction.y << ", " << direction.z << endl;
-		cout << horizontalAngle << ", " << verticalAngle << endl;
+		cout << "Position: " << position.x << ", " << position.y << ", " << position.z << endl;
+		cout << "Direction: " << direction.x << ", " << direction.y << ", " << direction.z << endl;
+		cout << "View Angle: " << horizontalAngle << ", " << verticalAngle << endl << endl;
 	}
 }

@@ -10,6 +10,7 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include "light.h"
 #include "shader.h"
 
 GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
@@ -156,113 +157,18 @@ void Shader::uniformMatrix4f(mat4 mat, string name)
 
 void Shader::uniformLight(Point_Light l, string name)
 {
-	int ploc = glGetUniformLocation(id, (name + ".position").c_str());
-	glUniform3fv(ploc, 1, &l.position[0]);
+	uniform3f(l.position, name + ".position");
+	uniform4f(l.color, name + ".color");
 
-	int cloc = glGetUniformLocation(id, (name + ".color").c_str());
-	glUniform4fv(cloc, 1, &l.color[0]);
+	//int ploc = glGetUniformLocation(id, (name + ".position").c_str());
+	//glUniform3fv(ploc, 1, &l.position[0]);
+
+	//int cloc = glGetUniformLocation(id, (name + ".color").c_str());
+	//glUniform4fv(cloc, 1, &l.color[0]);
 }
 
-
-
-Light::Light(vec4 color)
+void Shader::uniformLight(Directional_Light l, string name)
 {
-	this->color = color;
-}
-
-
-GLuint Shadow_Light::getFramebufferID()
-{
-	return framebufferID;
-}
-
-GLuint Shadow_Light::getTextureID()
-{
-	return depthTextureID;
-}
-
-mat4 Shadow_Light::getViewMatrix()
-{
-	return viewMatrix;
-}
-
-
-Point_Light::Point_Light()
-	:Light(vec4())
-{
-	initDepthBuffers();
-	position = vec3();
-}
-
-Point_Light::Point_Light(vec3 position, vec4 color)
-	: Light(color)
-{
-	initDepthBuffers();
-	this->position = position;
-}
-
-mat4 Point_Light::getProjectionMatrix(int index)
-{
-	return projectionMatrices[index];
-}
-
-void Point_Light::updateMatrices()
-{
-
-}
-
-void Point_Light::initDepthBuffers()
-{
-
-}
-
-
-Directional_Light::Directional_Light()
-	: Light(vec4())
-{
-	initDepthBuffers();
-	direction = vec3(0,1,0);
-	updateMatrices();
-}
-
-Directional_Light::Directional_Light(vec3 direction, vec4 color)
-	: Light(color)
-{
-	initDepthBuffers();
-	this->direction = normalize(direction);
-	updateMatrices();
-}
-
-mat4 Directional_Light::getProjectionMatrix()
-{
-	return projectionMatrix;
-}
-
-mat4 Directional_Light::getViewProjectionMatrix()
-{
-	return viewProjectionMatrix;
-}
-
-void Directional_Light::updateMatrices()
-{
-	projectionMatrix = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
-	viewMatrix = lookAt(direction, vec3(0,0,0), vec3(0,1,0));
-	viewProjectionMatrix = projectionMatrix * viewMatrix;
-}
-
-void Directional_Light::initDepthBuffers()
-{
-	glGenFramebuffers(1, &framebufferID);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
-
-	glGenTextures(1, &depthTextureID);
-	glBindTexture(GL_TEXTURE_2D, depthTextureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, shadowResolution, shadowResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTextureID, 0);
-	glDrawBuffer(GL_NONE);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cerr << "Error creating directional light framebuffer." << endl;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	uniform3f(l.direction, name + ".direction");
+	uniform4f(l.color, name + ".color");
 }

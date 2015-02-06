@@ -39,7 +39,7 @@ struct material
 };
 
 #define MAX_POINT_LIGHTS 1
-#define MAX_DIRECTIONAL_LIGHTS 2
+#define MAX_DIRECTIONAL_LIGHTS 3
 #define MAX_SPOT_LIGHTS 1
 
 uniform material mat;

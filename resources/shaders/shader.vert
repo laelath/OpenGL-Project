@@ -1,6 +1,6 @@
 #version 330 core
 
-#define MAX_DIRECTIONAL_LIGHTS 2
+#define MAX_DIRECTIONAL_LIGHTS 3
 
 struct directional_light
 {

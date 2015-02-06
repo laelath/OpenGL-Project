@@ -1,5 +1,15 @@
-#ifndef MODEL_LOADER_H
-#define MODEL_LOADER_H
+#pragma once
+
+#include <vector>
+#include <string>
+using namespace std;
+
+#include <GL/glew.h>
+
+#include <glm/glm.hpp>
+using namespace glm;
+
+#include "shader.h"
 
 struct vertex
 {
@@ -22,7 +32,7 @@ struct material
 struct mesh
 {
 	GLuint ibo;
-	std::vector<unsigned int> indices;
+	vector<unsigned int> indices;
 	unsigned int material;
 };
 
@@ -30,13 +40,11 @@ struct model
 {
 	//GLuint vao;
 	GLuint vbo;
-	std::vector<vertex> vertices;
-	std::vector<material> materials;
-	std::vector<mesh> meshes;
+	vector<vertex> vertices;
+	vector<material> materials;
+	vector<mesh> meshes;
 };
 
-bool load3DFromFile(const char* pFile, model* lmodel);
+bool load3DFromFile(string path, model* lmodel);
 
 void drawModel(const model* rmodel, Shader program);
-
-#endif

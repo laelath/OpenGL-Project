@@ -1,6 +1,12 @@
 #pragma once
 
-#define SHADOW_RESOLUTION 2048
+#include <GL/glew.h>
+
+#include <glm/glm.hpp>
+using namespace glm;
+
+#define SHADOW_RESOLUTION 4096
+#define BIAS_MATRIX mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0)
 
 class Shadow_Light
 {

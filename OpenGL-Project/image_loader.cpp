@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-using namespace std;
 
-#include <GL/glew.h>
 #include <FreeImage.h>
 
 #include "image_loader.h"
@@ -15,11 +13,11 @@ GLuint decodeTexture2D()
 	return 0;
 }
 
-GLuint loadTexture2D(const char* filename)
+GLuint loadTexture2D(string filename)
 {
 	for (unsigned int i = 0; i < loadedpaths.size(); i++)
 	{
-		if (string(filename) == loadedpaths[i])
+		if (filename == loadedpaths[i])
 		{
 			cout << "Found texture: " << filename << endl;
 			return loadedIDs[i];
@@ -29,19 +27,19 @@ GLuint loadTexture2D(const char* filename)
 	FREE_IMAGE_FORMAT format;
 	FIBITMAP* image = 0;
 
-	format = FreeImage_GetFileType(filename, 0);
+	format = FreeImage_GetFileType(filename.c_str(), 0);
 
-	if (format == FIF_UNKNOWN) format = FreeImage_GetFIFFromFilename(filename);
+	if (format == FIF_UNKNOWN) format = FreeImage_GetFIFFromFilename(filename.c_str());
 	if (format == FIF_UNKNOWN)
 	{
-		cerr << "Failed to load image: " << filename << ". Invalid file type." << endl;
+		cerr << "Failed to load image: " << filename.c_str() << ". Invalid file type." << endl;
 		return false;
 	}
 
-	if (FreeImage_FIFSupportsReading(format)) image = FreeImage_Load(format, filename);
+	if (FreeImage_FIFSupportsReading(format)) image = FreeImage_Load(format, filename.c_str());
 	if (!image)
 	{
-		cerr << "Failed to load image: " << filename << ". Error loading image." << endl;
+		cerr << "Failed to load image: " << filename.c_str() << ". Error loading image." << endl;
 		return false;
 	}
 
@@ -53,11 +51,11 @@ GLuint loadTexture2D(const char* filename)
 
 	if (pixels == NULL || width == 0 || height == 0)
 	{
-		cerr << "Failed to load image: " << filename << ". Error reading image." << endl;
+		cerr << "Failed to load image: " << filename.c_str() << ". Error reading image." << endl;
 		return false;
 	}
 
-	cout << "Loading texture: " << filename << endl;
+	cout << "Loading texture: " << filename.c_str() << endl;
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -68,7 +66,7 @@ GLuint loadTexture2D(const char* filename)
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, imgFormat, GL_UNSIGNED_BYTE, pixels);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, imgFormat, GL_UNSIGNED_BYTE, DataPointer);
 
-	loadedpaths.push_back(string(filename));
+	loadedpaths.push_back(filename);
 	loadedIDs.push_back(textureID);
 
 	return textureID;

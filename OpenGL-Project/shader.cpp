@@ -1,19 +1,14 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <vector>
-using namespace std;
 
-#include <GL/glew.h>
+#define GLM_SWIZZLE
 
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
 
-#include "light.h"
 #include "shader.h"
 
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
+GLuint LoadShaders(string vertex_file_path, string fragment_file_path)
 {
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -109,7 +104,7 @@ Shader::Shader(GLuint program)
 	id = program;
 }
 
-Shader::Shader(const char* vertex_file_path, const char* fragment_file_path)
+Shader::Shader(string vertex_file_path, string fragment_file_path)
 {
 	id = LoadShaders(vertex_file_path, fragment_file_path);
 }
@@ -155,10 +150,10 @@ void Shader::uniformMatrix4f(mat4 mat, string name)
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::uniformLight(Point_Light l, string name)
+void Shader::uniformLight(Point_Light l, string name, mat4 viewMatrix)
 {
-	uniform3f(l.position, name + ".position");
-	uniform4f(l.color, name + ".color");
+	this->uniform3f((viewMatrix * vec4(l.position, 1)).xyz, name + ".position");
+	this->uniform4f(l.color, name + ".color");
 
 	//int ploc = glGetUniformLocation(id, (name + ".position").c_str());
 	//glUniform3fv(ploc, 1, &l.position[0]);
@@ -167,8 +162,13 @@ void Shader::uniformLight(Point_Light l, string name)
 	//glUniform4fv(cloc, 1, &l.color[0]);
 }
 
-void Shader::uniformLight(Directional_Light l, string name)
+void Shader::uniformLight(Directional_Light l, string name, mat4 viewMatrix, int texture_handle)
 {
-	uniform3f(l.direction, name + ".direction");
-	uniform4f(l.color, name + ".color");
+	this->uniform3f((viewMatrix * vec4(l.direction, 0)).xyz, name + ".direction");
+	this->uniform4f(l.color, name + ".color");
+
+	this->uniformMatrix4f(BIAS_MATRIX * l.getViewProjectionMatrix(), name + ".depthBiasMVP");
+
+	glBindTexture(GL_TEXTURE_2D, l.getTextureID());
+	this->uniform1i(texture_handle, name + ".depth_texture");
 }

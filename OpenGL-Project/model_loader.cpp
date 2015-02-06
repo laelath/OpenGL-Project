@@ -1,28 +1,15 @@
-#include <vector>
-#include <string>
 #include <iostream>
-#include <fstream>
-using namespace std;
-
-#include <GL/glew.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <glm/glm.hpp>
-using namespace glm;
-
-#include "shader.h"
 #include "image_loader.h"
 #include "model_loader.h"
 
-//vector<string> loadedpaths;
-//vector<GLuint> loadedtextures;
+//GLuint model_vao;
 
-GLuint model_vao;
-
-bool load3DFromFile(const char* path, model* lmodel)
+bool load3DFromFile(string path, model* lmodel)
 {
 	Assimp::Importer importer;
 

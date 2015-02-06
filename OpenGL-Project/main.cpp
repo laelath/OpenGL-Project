@@ -7,19 +7,17 @@ using namespace std;
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
-#define GLM_SWIZZLE
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "shader.h"
 #include "light.h"
+#include "shader.h"
 #include "controls.h"
 #include "model_loader.h"
 #include "image_loader.h"
 
-//vec3 ambient_model = vec3(0.005f, 0.025f, 0.1f);
 vec3 ambient_model = vec3(0.08f, 0.11f, 0.14f);
 
 int main()
@@ -35,7 +33,6 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 
 	GLFWwindow* window;
 	window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
@@ -62,11 +59,8 @@ int main()
 	glClearColor(ambient_model.r, ambient_model.g, ambient_model.b, 0.1f);
 
 	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
-	//TESTING SHADERS
-	//Shader program("../resources/shaders/shader.vert", "../resources/shaders/simple.frag");
-	//Shader texturepass("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
 	Shader depthProgram("../resources/shaders/depth.vert", "../resources/shaders/depth.frag");
-	//
+	Shader passProgram("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
 
 	GLuint sampler;
 	glGenSamplers(1, &sampler);
@@ -86,76 +80,50 @@ int main()
 	GLuint model_vao;
 	glGenVertexArrays(1, &model_vao);
 
+	//TEMP////////////////////////////////////////////////////
+	static const GLfloat g_quad_vertex_buffer_data[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+	};
+
+	GLuint quad_vertexbuffer;
+	glGenBuffers(1, &quad_vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+	//TEMP/////////////////////////////////////////////////////
+
 	model torus, trashbin, floor;
 	load3DFromFile("../resources/models/torusball/torusball.obj", &torus);
 	load3DFromFile("../resources/models/trashcan/trashbin.obj", &trashbin);
 	load3DFromFile("../resources/models/floor/floor.obj", &floor);
 
-	Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 150));
-	Directional_Light dlit(vec3(1.0, 1.0, 1.0), vec4(0.8, 0.7, 0.5, 1.0));
-	//point_light lit;
-	//lit.position = vec3(-20, 100, 0);
-	//lit.color = vec4(1.0, 0.9, 0.7, 150);
-
-	/*/TEMP CODE ************************************************************************************************************************************************************************************
-
-	GLuint framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-	//unsigned int shadowResolution = 8192;
-
-	GLuint depthTexture;
-	glGenTextures(1, &depthTexture);
-	glBindTexture(GL_TEXTURE_2D, depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, shadowResolution, shadowResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
-	glDrawBuffer(GL_NONE);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cerr << "Error creating framebuffer." << endl;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//*/
-
-	/*mat4 biasMatrix(
-		0.5, 0.0, 0.0, 0.0,
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	);*/
-
-	//vec3 lightDirection = normalize(vec3(1.0, 1.0, 1.0));
-	//vec4 lightColor = vec4(0.8, 0.7, 0.5, 1.0);
-
-	//END OF TEMP CODE *****************************************************************************************************************************************************************************
+	Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 100));
+	Directional_Light dlit(vec3(1.0, 1.0, 1.0), vec4(0.8, 0.7, 0.5, 0.2));
+	Directional_Light d2lit(vec3(1.0, 0.7, -0.5), vec4(0.5, 0.7, 0.8, 0.2));
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
 	{
 		computeMatrices(window);
 
-		//glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, dlit.getFramebufferID());
 
-		glViewport(0, 0, shadowResolution, shadowResolution);
+		glViewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION);
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
 		{
-			//lightDirection = normalize(getPlayerPos());
 			dlit.direction = normalize(getPlayerPos());
 			dlit.updateMatrices();
 		}
 
-		//mat4 depthProjection = ortho(-300.0f, 300.0f, -300.0f, 300.0f, -300.0f, 300.0f);
-		//mat4 depthView = lookAt(lightDirection, vec3(0,0,0), vec3(0,1,0));
-		//mat4 depthModelViewProjection = depthProjection * depthView;
-
 		glUseProgram(depthProgram.getID());
 
-		//depthProgram.uniformMatrix4f(depthModelViewProjection, "modelViewProjection");
-		depthProgram.uniformMatrix4f(dlit.getProjectionMatrix() * dlit.getViewMatrix(), "modelViewProjection");
+		depthProgram.uniformMatrix4f(dlit.getViewProjectionMatrix(), "modelViewProjection");
 		
 		glBindVertexArray(model_vao);
 
@@ -164,6 +132,36 @@ int main()
 		drawModel(&trashbin, depthProgram);
 
 		glBindVertexArray(0);
+
+
+
+
+
+		glBindFramebuffer(GL_FRAMEBUFFER, d2lit.getFramebufferID());
+
+		glViewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION);
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		{
+			d2lit.direction = normalize(getPlayerPos());
+			d2lit.updateMatrices();
+		}
+
+		glUseProgram(depthProgram.getID());
+
+		depthProgram.uniformMatrix4f(d2lit.getViewProjectionMatrix(), "modelViewProjection");
+
+		glBindVertexArray(model_vao);
+
+		drawModel(&torus, depthProgram);
+		drawModel(&floor, depthProgram);
+		drawModel(&trashbin, depthProgram);
+
+		glBindVertexArray(0);
+
+
 
 
 
@@ -181,37 +179,27 @@ int main()
 		mat4 modelView = view * model;
 		mat4 modelViewProjection = projection * view * model;
 
-		//
-		//mat4 depthBiasModelViewProjection = biasMatrix * depthModelViewProjection;
-		mat4 depthBiasModelViewProjection = biasMatrix *dlit.getViewProjectionMatrix();
-		//
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(program.getID());
 
 		program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
 		program.uniformMatrix4f(modelView, "modelView");
-		program.uniformLight(lit, "light[0]");
 		program.uniform3f(ambient_model, "ambient_model");
 
-		//
-		program.uniformMatrix4f(depthBiasModelViewProjection, "depthBiasMVP");
-
-		//program.uniform3f(lightDirection, "lit.direction");
-		//program.uniform4f(lightColor, "lit.color");
-		program.uniform3f((modelView * vec4(dlit.direction, 0)).xyz, "lit.direction");
-		program.uniform4f(dlit.color, "lit.color");
-
-		program.uniform1i(shadowResolution, "depth_resolution");
-		//
+		program.uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindSampler(1, shadow_sampler);
 
-		//glBindTexture(GL_TEXTURE_2D, depthTexture);
-		glBindTexture(GL_TEXTURE_2D, dlit.getTextureID());
-		program.uniform1i(1, "depth_texture");
+		program.uniformLight(dlit, "directionalLights[0]", modelView, 1);
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindSampler(2, shadow_sampler);
+
+		program.uniformLight(d2lit, "directionalLights[1]", modelView, 2);
+
+		//program.uniformLight(lit, "pointLights[0]", modelView);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindSampler(0, sampler);
@@ -222,6 +210,30 @@ int main()
 		drawModel(&floor, program);
 		drawModel(&trashbin, program);
 
+		glBindVertexArray(0);
+
+
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glViewport(0, 0, 512, 512);
+
+		glUseProgram(passProgram.getID());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindSampler(0, shadow_sampler);
+		glBindTexture(GL_TEXTURE_2D, dlit.getTextureID());
+		passProgram.uniform1i(0, "Texture");
+
+		glBindVertexArray(model_vao);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);

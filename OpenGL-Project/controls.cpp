@@ -1,15 +1,10 @@
 #define _USE_MATH_DEFINES
-
 #include <iostream>
 #include <string>
 using namespace std;
 
-#include <GLFW/glfw3.h>
-
 #define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
 
 #include "controls.h"
 
@@ -74,7 +69,7 @@ void computeMatrices(GLFWwindow* window)
 		verticalAngle -= mouseSpeed * float(ypos);
 	}
 	
-	float verticalLimit = radians(89.999f);
+	float verticalLimit = radians(89.99f);
 
 	if (verticalAngle > verticalLimit)
 	{
@@ -100,7 +95,7 @@ void computeMatrices(GLFWwindow* window)
 	//vec3 right = vec3(sin(horizontalAngle + M_PI_2), 0, cos(horizontalAngle - M_PI_2));
 	//vec3 up = cross(right, direction);
 	vec3 up = vec3(0, 1, 0);
-	vec3 right = cross(direction, up);
+	vec3 right = normalize(cross(direction, up));
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{

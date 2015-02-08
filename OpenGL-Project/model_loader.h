@@ -38,7 +38,6 @@ struct mesh
 
 struct model
 {
-	//GLuint vao;
 	GLuint vbo;
 	vector<vertex> vertices;
 	vector<material> materials;
@@ -47,4 +46,5 @@ struct model
 
 bool load3DFromFile(string path, model* lmodel);
 
-void drawModel(const model* rmodel, Shader program);
+void drawModel(const model* rmodel, Shader* program);
+void drawModel(const model* rmodel, Shader* program, GLuint sampler, unsigned int texture_handle);

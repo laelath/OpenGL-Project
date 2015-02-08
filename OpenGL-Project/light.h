@@ -5,12 +5,16 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#define SHADOW_RESOLUTION 1024
+#include "shader.h"
+
+#define SHADOW_RESOLUTION 8192
 #define BIAS_MATRIX mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0)
 
 class Shadow_Light
 {
 public:
+	~Shadow_Light();
+
 	GLuint getFramebufferID();
 	GLuint getTextureID();
 

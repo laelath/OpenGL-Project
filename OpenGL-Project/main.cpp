@@ -12,9 +12,10 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include "input.h"
 #include "light.h"
 #include "shader.h"
-#include "controls.h"
+#include "player.h"
 #include "model_loader.h"
 #include "image_loader.h"
 
@@ -44,6 +45,7 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
+	initInput(window);
 	glewExperimental = true;
 
 	if (glewInit() != GLEW_OK) {
@@ -106,9 +108,8 @@ int main()
 	Directional_Light d1lit(vec3(1.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 0.5));
 	Directional_Light d2lit(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5));
 	Directional_Light d3lit(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5));
-	int light = 1;
 
-	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0)
+	while (!isKeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0)
 	{
 		computeMatrices(window);
 
@@ -118,7 +119,7 @@ int main()
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		if (isKeyDown(GLFW_KEY_L))
 		{
 			d1lit.direction = normalize(getPlayerPos());
 			d1lit.updateMatrices();
@@ -130,9 +131,9 @@ int main()
 		
 		glBindVertexArray(model_vao);
 
-		drawModel(&torus, depthProgram);
-		drawModel(&floor, depthProgram);
-		drawModel(&trashbin, depthProgram);
+		drawModel(&torus, &depthProgram);
+		drawModel(&floor, &depthProgram);
+		drawModel(&trashbin, &depthProgram);
 
 		glBindVertexArray(0);
 
@@ -146,7 +147,7 @@ int main()
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+		if (isKeyDown(GLFW_KEY_K))
 		{
 			d2lit.direction = normalize(getPlayerPos());
 			d2lit.updateMatrices();
@@ -158,9 +159,9 @@ int main()
 
 		glBindVertexArray(model_vao);
 
-		drawModel(&torus, depthProgram);
-		drawModel(&floor, depthProgram);
-		drawModel(&trashbin, depthProgram);
+		drawModel(&torus, &depthProgram);
+		drawModel(&floor, &depthProgram);
+		drawModel(&trashbin, &depthProgram);
 
 		glBindVertexArray(0);
 
@@ -174,7 +175,7 @@ int main()
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+		if (isKeyDown(GLFW_KEY_J))
 		{
 			d3lit.direction = normalize(getPlayerPos());
 			d3lit.updateMatrices();
@@ -186,37 +187,15 @@ int main()
 
 		glBindVertexArray(model_vao);
 
-		drawModel(&torus, depthProgram);
-		drawModel(&floor, depthProgram);
-		drawModel(&trashbin, depthProgram);
+		drawModel(&torus, &depthProgram);
+		drawModel(&floor, &depthProgram);
+		drawModel(&trashbin, &depthProgram);
 
 		glBindVertexArray(0);
 
 
-		//TEMP///////////////////////////////////////////
-		if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		{
-			if (light == 1)
-			{
-				d0lit = d1lit;
-				light++;
-			}
-			else if (light == 2)
-			{
-				d0lit = d2lit;
-				light++;
-			}
-			else if (light == 3)
-			{
-				d0lit = d3lit;
-				light++;
-			}
-			else if (light >= 4)
-			{
-				light = 1;
-			}
-		}
-		//TEMP////////////////////////////////////////////
+		
+
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -242,31 +221,20 @@ int main()
 
 		program.uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
-		glActiveTexture(GL_TEXTURE1);
-		glBindSampler(1, shadow_sampler);
-		program.uniformLight(d1lit, "directionalLights[0]", modelView, 1);
-
-		glActiveTexture(GL_TEXTURE2);
-		glBindSampler(2, shadow_sampler);
-		program.uniformLight(d2lit, "directionalLights[1]", modelView, 2);
-
-		glActiveTexture(GL_TEXTURE3);
-		glBindSampler(3, shadow_sampler);
-		program.uniformLight(d3lit, "directionalLights[2]", modelView, 3);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindSampler(0, sampler);
+		program.uniformLight(&d1lit, "directionalLights[0]", modelView, shadow_sampler, 1);
+		program.uniformLight(&d2lit, "directionalLights[1]", modelView, shadow_sampler, 2);
+		program.uniformLight(&d3lit, "directionalLights[2]", modelView, shadow_sampler, 3);
 
 		glBindVertexArray(model_vao);
 
-		drawModel(&torus, program);
-		drawModel(&floor, program);
-		drawModel(&trashbin, program);
+		drawModel(&torus, &program, sampler, 0);
+		drawModel(&floor, &program, sampler, 0);
+		drawModel(&trashbin, &program, sampler, 0);
 
 		glBindVertexArray(0);
 
 
-		//TESTING////////////////////////////////////////
+		//TESTING//////////////////////////////////////////
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		glViewport(0, 0, 256, 256);
@@ -291,7 +259,7 @@ int main()
 		//TESTING//////////////////////////////////////////
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
+		updateInput();
 	}
 
 	glfwTerminate();

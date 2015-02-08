@@ -36,6 +36,7 @@ struct material
 	float shininess;
 	float shine_strength;
 	sampler2D texture;
+	bool textured;
 };
 
 #define MAX_POINT_LIGHTS 1
@@ -58,7 +59,7 @@ in vec3 normal;
 
 in vec4 dLightShadowCoords[MAX_DIRECTIONAL_LIGHTS];
 
-out vec4 frag_color;
+layout(location = 0) out vec4 frag_color;
 
 vec3 diffuseLighting(const point_light light, vec3 light_direction)
 {
@@ -161,11 +162,21 @@ void main()
 		}
 	}
 
-	vec4 diffuse_texture = texture(mat.texture, texCoord);
-	vec3 ambient_level = ambient_model.rgb * diffuse_texture.rgb * mat.ambient;
-	diffuse_level *= diffuse_texture.rgb * mat.diffuse;
+	vec3 ambient_level = ambient_model.rgb * mat.ambient;
+	diffuse_level *= mat.diffuse;
+
+	float transparency = mat.opacity;
+
+	if (mat.textured)
+	{
+		vec4 diffuse_texture = texture(mat.texture, texCoord);
+		ambient_level *= diffuse_texture.rgb;
+		diffuse_level *= diffuse_texture.rgb;
+		transparency *= diffuse_texture.a;
+	}
+
 	specular_level *= mat.specular /* mat.shine_strength*/;
 	
 	frag_color.rgb = diffuse_level + specular_level + ambient_level;
-	frag_color.a = diffuse_texture.a * mat.opacity;
+	frag_color.a = transparency;
 }

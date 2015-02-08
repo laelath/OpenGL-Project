@@ -7,8 +7,6 @@
 #include "image_loader.h"
 #include "model_loader.h"
 
-//GLuint model_vao;
-
 bool load3DFromFile(string path, model* lmodel)
 {
 	Assimp::Importer importer;
@@ -22,9 +20,6 @@ bool load3DFromFile(string path, model* lmodel)
 	}
 
 	cout << "Loading 3D mesh: " << path << endl;
-
-	//glGenVertexArrays(1, &lmodel->vao);
-	//glBindVertexArray(lmodel->vao);
 
 	glGenBuffers(1, &lmodel->vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, lmodel->vbo);
@@ -80,10 +75,6 @@ bool load3DFromFile(string path, model* lmodel)
 	}
 
 	glBufferData(GL_ARRAY_BUFFER, vertexbuffer.size() * sizeof(float), &vertexbuffer[0], GL_STATIC_DRAW);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 	{
@@ -123,24 +114,8 @@ bool load3DFromFile(string path, model* lmodel)
 			}
 			
 			string texloadpath = stringpath + texname;
-
-			//bool isfound = false;
-			//for (unsigned int j = 0; j < loadedpaths.size(); j++)
-			//{
-				//if (texname == loadedpaths[j])
-				//{
-				//	texture = loadedtextures[j];
-				//	isfound = true;
-				//}
-			//}
-
-			//if (isfound == false)
-			//{
-				texture = loadTexture2D(texloadpath.c_str());
-
-				//loadedpaths.push_back(texloadpath);
-				//loadedtextures.push_back(texture);
-			//}
+			
+			texture = loadTexture2D(texloadpath.c_str());
 		}
 
 		material.texture = texture;
@@ -152,24 +127,12 @@ bool load3DFromFile(string path, model* lmodel)
 	return true;
 }
 
-/*void initModelVertexArray()
-{
-	glGenVertexArrays(1, &model_vao);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-}*/
-
-void drawModel(const model* rmodel, Shader program)
+void drawModel(const model* rmodel, Shader* program)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-
-	//glBindVertexArray(rmodel->vao);
-	//glBindVertexArray(model_vao);
-	//glBindVertexArray(vao);
+	
 	glBindBuffer(GL_ARRAY_BUFFER, rmodel->vbo);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -180,16 +143,56 @@ void drawModel(const model* rmodel, Shader program)
 	{
 		const material* mat = &rmodel->materials[mesh.material];
 		
-		program.uniform3f(mat->diffuse, "mat.diffuse");
-		program.uniform3f(mat->specular, "mat.specular");
-		program.uniform3f(mat->ambient, "mat.ambient");
+		program->uniform3f(mat->diffuse, "mat.diffuse");
+		program->uniform3f(mat->specular, "mat.specular");
+		program->uniform3f(mat->ambient, "mat.ambient");
 
-		program.uniform1f(mat->opacity, "mat.opacity");
-		program.uniform1f(mat->shininess, "mat.shininess");
-		program.uniform1f(mat->shine_strength, "mat.shine_strength");
-		
+		program->uniform1f(mat->opacity, "mat.opacity");
+		program->uniform1f(mat->shininess, "mat.shininess");
+		program->uniform1f(mat->shine_strength, "mat.shine_strength");
+
+		program->uniform1i(false, "mat.textured");
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
+		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+}
+
+void drawModel(const model* rmodel, Shader* program, GLuint sampler, unsigned int texture_handle)
+{
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, rmodel->vbo);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+
+	for (mesh mesh : rmodel->meshes)
+	{
+		const material* mat = &rmodel->materials[mesh.material];
+
+		program->uniform3f(mat->diffuse, "mat.diffuse");
+		program->uniform3f(mat->specular, "mat.specular");
+		program->uniform3f(mat->ambient, "mat.ambient");
+
+		program->uniform1f(mat->opacity, "mat.opacity");
+		program->uniform1f(mat->shininess, "mat.shininess");
+		program->uniform1f(mat->shine_strength, "mat.shine_strength");
+
+		program->uniform1i(true, "mat.textured");
+
+		glActiveTexture(GL_TEXTURE0 + texture_handle);
+		glBindSampler(texture_handle, sampler);
 		glBindTexture(GL_TEXTURE_2D, mat->texture);
-		program.uniform1i(0, "mat.texture");
+		program->uniform1i(texture_handle, "mat.texture");
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
 		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);

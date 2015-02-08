@@ -27,7 +27,7 @@ in vec3 normal;
 
 in vec4 shadowCoord;
 
-out vec4 frag_color;
+layout(location = 0) out vec4 frag_color;
 
 const vec2 poissonDisk[16] = vec2[](
 	vec2(-0.949914f, 0.02824331f),

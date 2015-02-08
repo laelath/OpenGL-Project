@@ -15,6 +15,9 @@ class Shader
 public:
 	Shader(GLuint program);
 	Shader(string vertex_file_path, string fragment_file_path);
+	Shader(string vertex_file_path, string geometry_file_path, string fragment_file_path);
+
+	~Shader();
 
 	GLuint getID();
 
@@ -24,11 +27,11 @@ public:
 	void uniform3f(vec3 vec, string name);
 	void uniform4f(vec4 vec, string name);
 	void uniformMatrix4f(mat4 mat, string name);
-	void uniformLight(Point_Light l, string name, mat4 viewMatrix);
-	void uniformLight(Directional_Light l, string name, mat4 viewMatrix, int texture_handle);
+	void uniformLight(const Point_Light* l, string name, mat4 viewMatrix);
+	void uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle);
 
 private:
 	GLuint id;
 };
 
-GLuint LoadShaders(string vertex_file_path, string fragment_file_path);
+//GLuint loadShaders(string vertex_file_path, string fragment_file_path);

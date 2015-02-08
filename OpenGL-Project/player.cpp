@@ -6,7 +6,8 @@ using namespace std;
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "controls.h"
+#include "input.h"
+#include "player.h"
 
 mat4 ViewMatrix;
 mat4 ProjectionMatrix;
@@ -35,6 +36,8 @@ float speed = 50.0f;
 float mouseSpeed = 0.001f;
 float speedMultiplyer = 1.0f;
 
+
+
 void computeMatrices(GLFWwindow* window)
 {
 	static double lastTime = glfwGetTime();
@@ -47,26 +50,29 @@ void computeMatrices(GLFWwindow* window)
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (isButtonDown(GLFW_MOUSE_BUTTON_1)/*glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS*/)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPos(window, 0, 0);
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		setMouseLock(true);
+		//glfwSetCursorPos(window, 0, 0);
 	}
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	if (isButtonDown(GLFW_MOUSE_BUTTON_2)/*glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS*/)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		setMouseLock(false);
 	}
 
-	if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+	if (isMouseLocked())
 	{
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
+		//double xpos, ypos;
+		//glfwGetCursorPos(window, &xpos, &ypos);
+		vec2 mousePos = getMousePos();
 
-		glfwSetCursorPos(window, 0, 0);
+		//glfwSetCursorPos(window, 0, 0);
 
-		horizontalAngle += mouseSpeed * float(xpos);
-		verticalAngle -= mouseSpeed * float(ypos);
+		horizontalAngle += mouseSpeed * float(mousePos.x);
+		verticalAngle -= mouseSpeed * float(mousePos.y);
 	}
 	
 	float verticalLimit = radians(89.99f);
@@ -97,42 +103,42 @@ void computeMatrices(GLFWwindow* window)
 	vec3 up = vec3(0, 1, 0);
 	vec3 right = normalize(cross(direction, up));
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_LEFT_SHIFT)/*glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS*/)
 	{
 		speed += speed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_LEFT_CONTROL)/*glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS*/)
 	{
 		speed -= speed * deltaTime;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_W)/*glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS*/)
 	{
 		position += direction * deltaTime * speed;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_S)/*glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS*/)
 	{
 		position -= direction * deltaTime * speed;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_D)/*glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS*/)
 	{
 		position += right * deltaTime * speed;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_A)/*glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS*/)
 	{
 		position -= right * deltaTime * speed;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_E)/*glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS*/)
 	{
 		position += up * deltaTime * speed;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	if (isKeyDown(GLFW_KEY_Q)/*glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS*/)
 	{
 		position -= up * deltaTime * speed;
 	}
@@ -142,7 +148,7 @@ void computeMatrices(GLFWwindow* window)
 	ProjectionMatrix = perspective(radians(FoV), float(width) / float(height), 0.1f, 100000.0f);
 	ViewMatrix = lookAt(position, position + direction, up);
 	
-	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+	if (isKeyPressed(GLFW_KEY_ENTER)/*glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS*/)
 	{
 		cout << "Position: " << position.x << ", " << position.y << ", " << position.z << endl;
 		cout << "Direction: " << direction.x << ", " << direction.y << ", " << direction.z << endl;

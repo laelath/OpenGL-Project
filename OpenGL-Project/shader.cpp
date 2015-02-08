@@ -8,95 +8,43 @@
 
 #include "shader.h"
 
-GLuint LoadShaders(string vertex_file_path, string fragment_file_path)
+GLuint loadShader(string file_path, GLuint shader)
 {
-	// Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	GLuint shaderID = glCreateShader(shader);
 
-	// Read the Vertex Shader code from the file
-	string VertexShaderCode;
-	ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open())
+	string shaderCode;
+	ifstream shaderStream(file_path, std::ios::in);
+	if (shaderStream.is_open())
 	{
 		string Line = "";
-		while (getline(VertexShaderStream, Line)) VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
+		while (getline(shaderStream, Line)) shaderCode += "\n" + Line;
+		shaderStream.close();
 	}
 	else
 	{
-		cerr << "Cannot open: " << vertex_file_path << endl;
+		cerr << "Cannot open: " << file_path << endl;
 		return 0;
 	}
 
-	// Read the Fragment Shader code from the file
-	string FragmentShaderCode;
-	ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open())
+	cout << "Compiling shader : " << file_path << endl;
+	char const* sourcePointer = shaderCode.c_str();
+	glShaderSource(shaderID, 1, &sourcePointer, NULL);
+	glCompileShader(shaderID);
+
+	GLint result = 0;
+
+	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE)
 	{
-		string Line = "";
-		while (getline(FragmentShaderStream, Line)) FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
+		GLint infoLogLength = 0;
+		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		vector<char> shaderErrorMessage(infoLogLength);
+		glGetShaderInfoLog(shaderID, infoLogLength, NULL, &shaderErrorMessage[0]);
+		cerr << &shaderErrorMessage[0] << endl;
+		return 0;
 	}
 
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-
-	// Compile Vertex Shader
-	cout << "Compiling shader : " << vertex_file_path << endl;
-	char const* VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-	glCompileShader(VertexShaderID);
-
-	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 1)
-	{
-		vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		cerr << &VertexShaderErrorMessage[0] << endl;
-	}
-
-	// Compile Fragment Shader
-	cout << "Compiling shader : " << fragment_file_path << endl;
-	char const* FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-	glCompileShader(FragmentShaderID);
-
-	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 1)
-	{
-		vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		cerr << &FragmentShaderErrorMessage[0] << endl;
-	}
-	
-	// Link the program
-	cout << "Linking program" << endl;
-	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
-	glLinkProgram(ProgramID);
-
-	// Check the program
-	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 1)
-	{
-		vector<char> ProgramErrorMessage(InfoLogLength + 1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		cerr << &ProgramErrorMessage[0] << endl;
-	}
-
-	cout << endl;
-
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
-
-	return ProgramID;
+	return shaderID;
 }
 
 Shader::Shader(GLuint program)
@@ -106,7 +54,62 @@ Shader::Shader(GLuint program)
 
 Shader::Shader(string vertex_file_path, string fragment_file_path)
 {
-	id = LoadShaders(vertex_file_path, fragment_file_path);
+	GLuint vertexShaderID = loadShader(vertex_file_path, GL_VERTEX_SHADER);
+	GLuint fragmentShaderID = loadShader(fragment_file_path, GL_FRAGMENT_SHADER);
+
+	cout << "Linking program" << endl;
+	GLuint programID = glCreateProgram();
+	glAttachShader(programID, vertexShaderID);
+	glAttachShader(programID, fragmentShaderID);
+	glLinkProgram(programID);
+
+	GLint result;
+	glGetProgramiv(programID, GL_LINK_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		cerr << "Error Linking Program." << endl;
+	}
+
+	cout << endl;
+
+	glDeleteShader(vertexShaderID);
+	glDeleteShader(fragmentShaderID);
+
+	id = programID;
+}
+
+Shader::Shader(string vertex_file_path, string geometry_file_path, string fragment_file_path)
+{
+	GLuint vertexShaderID = loadShader(vertex_file_path, GL_VERTEX_SHADER);
+	GLuint geometryShaderID = loadShader(geometry_file_path, GL_GEOMETRY_SHADER);
+	GLuint fragmentShaderID = loadShader(fragment_file_path, GL_FRAGMENT_SHADER);
+
+	cout << "Linking program" << endl;
+	GLuint programID = glCreateProgram();
+	glAttachShader(programID, vertexShaderID);
+	glAttachShader(programID, geometryShaderID);
+	glAttachShader(programID, fragmentShaderID);
+	glLinkProgram(programID);
+
+	GLint result;
+	glGetProgramiv(programID, GL_LINK_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		cerr << "Error Linking Program." << endl;
+	}
+
+	cout << endl;
+
+	glDeleteShader(vertexShaderID);
+	glDeleteShader(geometryShaderID);
+	glDeleteShader(fragmentShaderID);
+
+	id = programID;
+}
+
+Shader::~Shader()
+{
+	glDeleteProgram(id);
 }
 
 GLuint Shader::getID()
@@ -150,25 +153,21 @@ void Shader::uniformMatrix4f(mat4 mat, string name)
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::uniformLight(Point_Light l, string name, mat4 viewMatrix)
+void Shader::uniformLight(const Point_Light* l, string name, mat4 viewMatrix)
 {
-	this->uniform3f((viewMatrix * vec4(l.position, 1)).xyz, name + ".position");
-	this->uniform4f(l.color, name + ".color");
-
-	//int ploc = glGetUniformLocation(id, (name + ".position").c_str());
-	//glUniform3fv(ploc, 1, &l.position[0]);
-
-	//int cloc = glGetUniformLocation(id, (name + ".color").c_str());
-	//glUniform4fv(cloc, 1, &l.color[0]);
+	this->uniform3f((viewMatrix * vec4(l->position, 1)).xyz, name + ".position");
+	this->uniform4f(l->color, name + ".color");
 }
 
-void Shader::uniformLight(Directional_Light l, string name, mat4 viewMatrix, int texture_handle)
+void Shader::uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle)
 {
-	this->uniform3f((viewMatrix * vec4(l.direction, 0)).xyz, name + ".direction");
-	this->uniform4f(l.color, name + ".color");
+	this->uniform3f((viewMatrix * vec4(l->direction, 0)).xyz, name + ".direction");
+	this->uniform4f(l->color, name + ".color");
 
-	this->uniformMatrix4f(BIAS_MATRIX * l.getViewProjectionMatrix(), name + ".depthBiasMVP");
+	this->uniformMatrix4f(BIAS_MATRIX * l->getViewProjectionMatrix(), name + ".depthBiasMVP");
 
-	glBindTexture(GL_TEXTURE_2D, l.getTextureID());
+	glActiveTexture(GL_TEXTURE0 + texture_handle);
+	glBindSampler(texture_handle, sampler);
+	glBindTexture(GL_TEXTURE_2D, l->getTextureID());
 	this->uniform1i(texture_handle, name + ".depth_texture");
 }

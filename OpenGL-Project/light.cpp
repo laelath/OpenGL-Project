@@ -5,6 +5,12 @@ using namespace std;
 
 #include "light.h"
 
+Shadow_Light::~Shadow_Light()
+{
+	glDeleteFramebuffers(1, &framebufferID);
+	glDeleteTextures(1, &depthTextureID);
+}
+
 GLuint Shadow_Light::getFramebufferID()
 {
 	return framebufferID;

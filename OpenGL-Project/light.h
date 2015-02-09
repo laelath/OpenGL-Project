@@ -15,12 +15,13 @@ class Shadow_Light
 public:
 	~Shadow_Light();
 
-	GLuint getFramebufferID();
-	GLuint getTextureID();
+	GLuint getFramebufferID() const;
+	GLuint getTextureID() const;
 
-	mat4 getViewMatrix();
+	mat4 getViewMatrix() const;
 
 	virtual void updateMatrices() = 0;
+	virtual void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) = 0;
 
 protected:
 	GLuint framebufferID, depthTextureID;
@@ -39,9 +40,10 @@ public:
 	Point_Light();
 	Point_Light(vec3 position, vec4 color);
 
-	mat4 getProjectionMatrix(int index);
+	mat4 getProjectionMatrix(int index) const;
 
 	void updateMatrices();
+	void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle);
 
 protected:
 	void initDepthBuffers();
@@ -59,10 +61,11 @@ public:
 	Directional_Light();
 	Directional_Light(vec3 direction, vec4 color);
 
-	mat4 getProjectionMatrix();
-	mat4 getViewProjectionMatrix();
+	mat4 getProjectionMatrix() const;
+	mat4 getViewProjectionMatrix() const;
 
 	void updateMatrices();
+	void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle);
 
 protected:
 	void initDepthBuffers();

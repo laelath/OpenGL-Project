@@ -46,5 +46,5 @@ struct model
 
 bool load3DFromFile(string path, model* lmodel);
 
-void drawModel(const model* rmodel, Shader* program);
-void drawModel(const model* rmodel, Shader* program, GLuint sampler, unsigned int texture_handle);
+void drawModel(const model* rmodel, const Shader* program);
+void drawModel(const model* rmodel, const Shader* program, GLuint sampler, unsigned int texture_handle);

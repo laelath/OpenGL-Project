@@ -2,8 +2,6 @@
 #include <fstream>
 #include <vector>
 
-#define GLM_SWIZZLE
-
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.h"
@@ -112,62 +110,62 @@ Shader::~Shader()
 	glDeleteProgram(id);
 }
 
-GLuint Shader::getID()
+GLuint Shader::getID() const
 {
 	return id;
 }
 
-void Shader::uniform1i(int i, string name)
+void Shader::uniform1i(int i, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform1iv(loc, 1, &i);
 }
 
-void Shader::uniform1f(float f, string name)
+void Shader::uniform1f(float f, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform1fv(loc, 1, &f);
 }
 
-void Shader::uniform2f(vec2 vec, string name)
+void Shader::uniform2f(vec2 vec, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform2fv(loc, 1, &vec[0]);
 }
 
-void Shader::uniform3f(vec3 vec, string name)
+void Shader::uniform3f(vec3 vec, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform3fv(loc, 1, &vec[0]);
 }
 
-void Shader::uniform4f(vec4 vec, string name)
+void Shader::uniform4f(vec4 vec, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform4fv(loc, 1, &vec[0]);
 }
 
-void Shader::uniformMatrix4f(mat4 mat, string name)
+void Shader::uniformMatrix4f(mat4 mat, string name) const
 {
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::uniformLight(const Point_Light* l, string name, mat4 viewMatrix)
+/*void Shader::uniformLight(const Point_Light* l, string name, mat4 viewMatrix) const
 {
 	this->uniform3f((viewMatrix * vec4(l->position, 1)).xyz, name + ".position");
 	this->uniform4f(l->color, name + ".color");
 }
 
-void Shader::uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle)
+void Shader::uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle) const
 {
 	this->uniform3f((viewMatrix * vec4(l->direction, 0)).xyz, name + ".direction");
 	this->uniform4f(l->color, name + ".color");
 
-	this->uniformMatrix4f(BIAS_MATRIX * l->getViewProjectionMatrix(), name + ".depthBiasMVP");
+	uniformMatrix4f(BIAS_MATRIX * l->getViewProjectionMatrix(), name + ".depthBiasMVP");
 
 	glActiveTexture(GL_TEXTURE0 + texture_handle);
 	glBindSampler(texture_handle, sampler);
 	glBindTexture(GL_TEXTURE_2D, l->getTextureID());
 	this->uniform1i(texture_handle, name + ".depth_texture");
-}
+}*/

@@ -127,7 +127,7 @@ bool load3DFromFile(string path, model* lmodel)
 	return true;
 }
 
-void drawModel(const model* rmodel, Shader* program)
+void drawModel(const model* rmodel, const Shader* program)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -163,7 +163,7 @@ void drawModel(const model* rmodel, Shader* program)
 	glDisableVertexAttribArray(2);
 }
 
-void drawModel(const model* rmodel, Shader* program, GLuint sampler, unsigned int texture_handle)
+void drawModel(const model* rmodel, const Shader* program, GLuint sampler, unsigned int texture_handle)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

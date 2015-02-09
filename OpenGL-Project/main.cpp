@@ -221,9 +221,12 @@ int main()
 
 		program.uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
-		program.uniformLight(&d1lit, "directionalLights[0]", modelView, shadow_sampler, 1);
-		program.uniformLight(&d2lit, "directionalLights[1]", modelView, shadow_sampler, 2);
-		program.uniformLight(&d3lit, "directionalLights[2]", modelView, shadow_sampler, 3);
+		//program.uniformLight(&d1lit, "directionalLights[0]", modelView, shadow_sampler, 1);
+		//program.uniformLight(&d2lit, "directionalLights[1]", modelView, shadow_sampler, 2);
+		//program.uniformLight(&d3lit, "directionalLights[2]", modelView, shadow_sampler, 3);
+		d1lit.bindLight(&program, "directionalLights[0]", modelView, shadow_sampler, 1);
+		d2lit.bindLight(&program, "directionalLights[1]", modelView, shadow_sampler, 2);
+		d3lit.bindLight(&program, "directionalLights[2]", modelView, shadow_sampler, 3);
 
 		glBindVertexArray(model_vao);
 

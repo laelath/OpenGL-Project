@@ -4,6 +4,11 @@
 #include <vector>
 using namespace std;
 
+#include <GL/glew.h>
+
+#include "camera.h"
+#include "light.h"
+#include "shader.h"
 #include "model_loader.h"
 
 class Scene
@@ -17,8 +22,12 @@ public:
 
 	void addLight(Shadow_Light* light);
 
+	void renderScene(const Shader* program, const Camera* camera, bool lighting) const;
+	void renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, bool lighting) const;
+
 private:
+	GLuint vao;
+
 	vector<model*> models;
 	vector<Shadow_Light*> lights;
 };
-

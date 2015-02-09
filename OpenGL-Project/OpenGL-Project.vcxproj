@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="image_loader.h" />
@@ -20,6 +21,7 @@
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="image_loader.cpp" />

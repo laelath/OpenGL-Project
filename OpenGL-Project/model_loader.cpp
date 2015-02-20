@@ -163,7 +163,7 @@ void drawModel(const model* rmodel, const Shader* program)
 	glDisableVertexAttribArray(2);
 }
 
-void drawModel(const model* rmodel, const Shader* program, GLuint sampler, unsigned int texture_handle)
+void drawModel(const model* rmodel, const Shader* program, GLuint sampler, GLuint texture_handle)
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

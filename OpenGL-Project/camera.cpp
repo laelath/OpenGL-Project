@@ -1,9 +1,10 @@
+#define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #include "camera.h"
 
-Camera::Camera(vec3 position, quat direction, float zNear, float zfar)
+Camera::Camera(vec3 position, quat direction, float zNear, float zFar)
 {
 	this->position = position;
 	this->direction = direction;
@@ -11,7 +12,7 @@ Camera::Camera(vec3 position, quat direction, float zNear, float zfar)
 	this->zFar = zFar;
 }
 
-Camera::Camera(vec3 position, vec3 rotation, float zNear, float zfar)
+Camera::Camera(vec3 position, vec3 rotation, float zNear, float zFar)
 {
 	this->position = position;
 	this->direction = quat(rotation);

@@ -22,8 +22,12 @@ public:
 
 	void addLight(Shadow_Light* light);
 
-	void renderScene(const Shader* program, const Camera* camera, bool lighting) const;
-	void renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, bool lighting) const;
+	void renderLights(const Shader* depth_program);
+
+	void renderScene(const Shader* program, const Camera* camera) const;
+	void renderScene(const Shader* program, const Camera* camera, GLuint shadow_sampler) const;
+	void renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle) const;
+	void renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, GLuint shadow_sampler) const;
 
 private:
 	GLuint vao;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 #define GLM_SWIZZLE
@@ -55,7 +56,12 @@ void Point_Light::updateMatrices()
 
 }
 
-void Point_Light::bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle)
+void Point_Light::bindRenderData(const Shader* program) const
+{
+
+}
+
+void Point_Light::bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const
 {
 
 }
@@ -99,8 +105,14 @@ void Directional_Light::updateMatrices()
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
-void Directional_Light::bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle)
+void Directional_Light::bindRenderData(const Shader* program) const
 {
+	program->uniformMatrix4f(viewProjectionMatrix, "modelViewProjection");
+}
+
+void Directional_Light::bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const
+{
+	string name = DIRECTIONAL_LIGHT_NAME + string("[") + to_string(index) + string("]");
 	program->uniform3f((viewMatrix * vec4(direction, 0)).xyz, name + ".direction");
 	program->uniform4f(color, name + ".color");
 

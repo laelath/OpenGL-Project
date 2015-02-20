@@ -18,6 +18,7 @@ using namespace glm;
 #include "player.h"
 #include "model_loader.h"
 #include "image_loader.h"
+#include "scene.h"
 
 vec3 ambient_model = vec3(0.08f, 0.11f, 0.14f);
 
@@ -98,22 +99,34 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
 	//TEMP/////////////////////////////////////////////////////
 
-	model torus, trashbin, floor;
-	load3DFromFile("../resources/models/torusball/torusball.obj", &torus);
-	load3DFromFile("../resources/models/trashcan/trashbin.obj", &trashbin);
-	load3DFromFile("../resources/models/floor/floor.obj", &floor);
+	Scene scene;
 
-	Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 100));
-	Directional_Light d0lit;
-	Directional_Light d1lit(vec3(1.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 0.5));
-	Directional_Light d2lit(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5));
-	Directional_Light d3lit(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5));
+	scene.addModel("../resources/models/torusball/torusball.obj");
+	scene.addModel("../resources/models/trashcan/trashbin.obj");
+	scene.addModel("../resources/models/floor/floor.obj");
+
+	scene.addLight(new Directional_Light(vec3(1.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 0.5)));
+	scene.addLight(new Directional_Light(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5)));
+	scene.addLight(new Directional_Light(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5)));
+
+	Perspective_Camera camera(vec3(), vec3(), 90.0f, 1280.0 / 720.0, 0.1f, 100000.0f);
+
+	//model torus, trashbin, floor;
+	//load3DFromFile("../resources/models/torusball/torusball.obj", &torus);
+	//load3DFromFile("../resources/models/trashcan/trashbin.obj", &trashbin);
+	//load3DFromFile("../resources/models/floor/floor.obj", &floor);
+
+	//Point_Light lit(vec3(-20, 100, 0), vec4(1.0, 0.9, 0.7, 100));
+	//Directional_Light d0lit;
+	//Directional_Light d1lit(vec3(1.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 0.5));
+	//Directional_Light d2lit(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5));
+	//Directional_Light d3lit(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5));
 
 	while (!isKeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0)
 	{
 		computeMatrices(window);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, d1lit.getFramebufferID());
+		/*glBindFramebuffer(GL_FRAMEBUFFER, d1lit.getFramebufferID());
 
 		glViewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION);
 
@@ -191,11 +204,12 @@ int main()
 		drawModel(&floor, &depthProgram);
 		drawModel(&trashbin, &depthProgram);
 
-		glBindVertexArray(0);
-
+		glBindVertexArray(0);*/
+		camera.setPosition(getPlayerPos());
+		camera.setRotation(getPlayerViewAngles());
 
 		
-
+		scene.renderLights(&depthProgram);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -204,49 +218,45 @@ int main()
 
 		glViewport(0, 0, width, height);
 
-		mat4 projection = getProjectionMatrix();
-		mat4 view = getViewMatrix();
-		mat4 model = mat4(1.0f);
+		//mat4 projection = getProjectionMatrix();
+		//mat4 view = getViewMatrix();
+		//mat4 model = mat4(1.0f);
 
-		mat4 modelView = view * model;
-		mat4 modelViewProjection = projection * view * model;
+		//mat4 modelView = view * model;	
+		//mat4 modelViewProjection = projection * view * model;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(program.getID());
+		//glUseProgram(program.getID());
 
-		program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
-		program.uniformMatrix4f(modelView, "modelView");
+		//program.uniformMatrix4f(modelViewProjection, "modelViewProjection");
+		//program.uniformMatrix4f(modelView, "modelView");
 		program.uniform3f(ambient_model, "ambient_model");
 
 		program.uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
-		//program.uniformLight(&d1lit, "directionalLights[0]", modelView, shadow_sampler, 1);
-		//program.uniformLight(&d2lit, "directionalLights[1]", modelView, shadow_sampler, 2);
-		//program.uniformLight(&d3lit, "directionalLights[2]", modelView, shadow_sampler, 3);
-		d1lit.bindLight(&program, "directionalLights[0]", modelView, shadow_sampler, 1);
-		d2lit.bindLight(&program, "directionalLights[1]", modelView, shadow_sampler, 2);
-		d3lit.bindLight(&program, "directionalLights[2]", modelView, shadow_sampler, 3);
+		scene.renderScene(&program, &camera, sampler, 0, shadow_sampler);
 
-		glBindVertexArray(model_vao);
+		//d1lit.bindLight(&program, 0, modelView, shadow_sampler, 1);
+		//d2lit.bindLight(&program, 1, modelView, shadow_sampler, 2);
+		//d3lit.bindLight(&program, 2, modelView, shadow_sampler, 3);
+
+		/*glBindVertexArray(model_vao);
 
 		drawModel(&torus, &program, sampler, 0);
 		drawModel(&floor, &program, sampler, 0);
 		drawModel(&trashbin, &program, sampler, 0);
 
-		glBindVertexArray(0);
+		glBindVertexArray(0);*/
 
 
-		//TESTING//////////////////////////////////////////
+		/*/TESTING//////////////////////////////////////////
 		glClear(GL_DEPTH_BUFFER_BIT);
-
-		glViewport(0, 0, 256, 256);
 
 		glUseProgram(passProgram.getID());
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindSampler(0, shadow_sampler);
-		glBindTexture(GL_TEXTURE_2D, d3lit.getTextureID());
 		passProgram.uniform1i(0, "Texture");
 
 		glBindVertexArray(model_vao);
@@ -254,12 +264,22 @@ int main()
 		glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		glViewport(0, 0, 256, 256);
+		glBindTexture(GL_TEXTURE_2D, d1lit.getTextureID());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glViewport(256, 0, 256, 256);
+		glBindTexture(GL_TEXTURE_2D, d2lit.getTextureID());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glViewport(512, 0, 256, 256);
+		glBindTexture(GL_TEXTURE_2D, d3lit.getTextureID());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
-		//TESTING//////////////////////////////////////////
+		//TESTING/////////////////////////////////////////*/
 
 		glfwSwapBuffers(window);
 		updateInput();

@@ -20,7 +20,7 @@ out vec4 dLightShadowCoords[MAX_DIRECTIONAL_LIGHTS];
 uniform mat4 modelView;
 uniform mat4 modelViewProjection;
 
-uniform directional_light directionalLights[MAX_DIRECTIONAL_LIGHTS];
+uniform directional_light Directional_Lights[MAX_DIRECTIONAL_LIGHTS];
 
 void main()
 {
@@ -30,7 +30,7 @@ void main()
 
 	for (int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++)
 	{
-		dLightShadowCoords[i] = directionalLights[i].depthBiasMVP * vec4(in_Vertex, 1);
+		dLightShadowCoords[i] = Directional_Lights[i].depthBiasMVP * vec4(in_Vertex, 1);
 	}
 	
 	gl_Position = modelViewProjection * vec4(in_Vertex, 1);

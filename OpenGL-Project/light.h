@@ -7,8 +7,12 @@ using namespace glm;
 
 #include "shader.h"
 
-#define SHADOW_RESOLUTION 8192
+#define SHADOW_RESOLUTION 2048
 #define BIAS_MATRIX mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0)
+
+#define POINT_LIGHT_NAME "Point_Lights"
+#define DIRECTIONAL_LIGHT_NAME "Directional_Lights"
+#define SPOT_LIGHT_NAME "Spot_Lights"
 
 class Shadow_Light
 {
@@ -21,7 +25,8 @@ public:
 	mat4 getViewMatrix() const;
 
 	virtual void updateMatrices() = 0;
-	virtual void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) = 0;
+	virtual void bindRenderData(const Shader* program) const = 0;
+	virtual void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const = 0;
 
 protected:
 	GLuint framebufferID, depthTextureID;
@@ -43,7 +48,8 @@ public:
 	mat4 getProjectionMatrix(int index) const;
 
 	void updateMatrices();
-	void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle);
+	void bindRenderData(const Shader* program) const;
+	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const;
 
 protected:
 	void initDepthBuffers();
@@ -65,7 +71,8 @@ public:
 	mat4 getViewProjectionMatrix() const;
 
 	void updateMatrices();
-	void bindLight(const Shader* program, string name, mat4 viewMatrix, GLuint sampler, GLuint texture_handle);
+	void bindRenderData(const Shader* program) const;
+	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const;
 
 protected:
 	void initDepthBuffers();

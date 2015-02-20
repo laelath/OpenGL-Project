@@ -63,8 +63,9 @@ GLuint loadTexture2D(string filename)
 
 	int imgFormat = bpp == 32 ? GL_BGRA : bpp == 24 ? GL_BGR : bpp == 8 ? GL_LUMINANCE : 0;
 
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, imgFormat, GL_UNSIGNED_BYTE, pixels);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, imgFormat, GL_UNSIGNED_BYTE, DataPointer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, imgFormat, GL_UNSIGNED_BYTE, pixels);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	loadedpaths.push_back(filename);
 	loadedIDs.push_back(textureID);

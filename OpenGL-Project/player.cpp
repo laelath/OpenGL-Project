@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+//#define _USE_MATH_DEFINES
 #include <iostream>
 #include <string>
 using namespace std;
@@ -12,6 +12,9 @@ using namespace std;
 mat4 ViewMatrix;
 mat4 ProjectionMatrix;
 vec3 position = vec3(0, 50, 150);
+
+float horizontalAngle = 0.0f;
+float verticalAngle = 0.0f;
 
 mat4 getViewMatrix()
 {
@@ -28,8 +31,11 @@ vec3 getPlayerPos()
 	return position;
 }
 
-float horizontalAngle = 0.0f;
-float verticalAngle = 0.0f;
+vec3 getPlayerViewAngles()
+{
+	return vec3(horizontalAngle, verticalAngle, 0);
+}
+
 float initialFoV = 90.0f;
 
 float speed = 50.0f;

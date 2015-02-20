@@ -45,11 +45,11 @@ struct material
 
 uniform material mat;
 
-uniform point_light pointLights[MAX_POINT_LIGHTS];
-uniform directional_light directionalLights[MAX_DIRECTIONAL_LIGHTS];
-uniform spot_light spotLights[MAX_SPOT_LIGHTS];
+uniform point_light Point_Lights[MAX_POINT_LIGHTS];
+uniform directional_light Directional_Lights[MAX_DIRECTIONAL_LIGHTS];
+uniform spot_light Spot_Lights[MAX_SPOT_LIGHTS];
 
-uniform int depth_resolution;
+uniform int Depth_Resolution;
 
 uniform vec3 ambient_model;
 
@@ -118,49 +118,66 @@ void main()
 	vec3 specular_level = vec3(0,0,0);
 	vec3 view_direction = normalize(position);
 
-	for (int i = 0; (i < MAX_POINT_LIGHTS) && (pointLights[i].color.a != 0); i++)
+	/*for (int i = 0; (i < MAX_POINT_LIGHTS) && (Point_Lights[i].color.a != 0); i++)
 	{
-		vec3 light_direction = normalize(pointLights[i].position - position);
-		vec3 light_diffuse = diffuseLighting(pointLights[i], light_direction);
+		vec3 light_direction = normalize(Point_Lights[i].position - position);
+		vec3 light_diffuse = diffuseLighting(Point_Lights[i], light_direction);
 		diffuse_level += light_diffuse;
 		
 		if (light_diffuse.r > 0.0 || light_diffuse.g > 0.0 || light_diffuse.b > 0.0)
 		{
-			specular_level += specularLighting(pointLights[i], light_direction, view_direction);
+			specular_level += specularLighting(Point_Lights[i], light_direction, view_direction);
 		}
-	}
+	}*/
 
 	for (int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++)
 	{
-		float cosTheta = clamp(dot(normal, directionalLights[i].direction), 0, 1);
-		float bias = clamp(10 * tan(acos(cosTheta)) / depth_resolution, 0.0, 0.01);
+		float cosTheta = clamp(dot(normal, Directional_Lights[i].direction), 0, 1);
+		float bias = clamp(10 * tan(acos(cosTheta)) / Depth_Resolution, 0.0, 0.01);
 
-		float visibility = texture(directionalLights[i].depth_texture, 
+		//float visibility = texture(Directional_Lights[i].depth_texture, 
+		//		vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
+
+		float visibility;
+		if (i == 0)
+		{
+			visibility = texture(Directional_Lights[0].depth_texture, 
 				vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
+		}
+		else if (i == 1)
+		{
+			visibility = texture(Directional_Lights[1].depth_texture, 
+				vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
+		}
+		else if (i == 2)
+		{
+			visibility = texture(Directional_Lights[2].depth_texture, 
+				vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
+		}
 
 		if (visibility != 0.0)
 		{
-			vec3 light_diffuse = diffuseLighting(directionalLights[i]);
-			diffuse_level += light_diffuse;
+			vec3 light_diffuse = diffuseLighting(Directional_Lights[i]);
 			
 			if (light_diffuse.r > 0.0 || light_diffuse.g > 0.0 || light_diffuse.b > 0.0)
 			{
-				specular_level += specularLighting(directionalLights[i], view_direction);
+				diffuse_level += light_diffuse;
+				specular_level += specularLighting(Directional_Lights[i], view_direction);
 			}
 		}
 	}
 
-	for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
+	/*for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
 	{
-		vec3 light_direction = normalize(spotLights[i].position - position);
-		vec3 light_diffuse = diffuseLighting(spotLights[i], light_direction);
+		vec3 light_direction = normalize(Spot_Lights[i].position - position);
+		vec3 light_diffuse = diffuseLighting(Spot_Lights[i], light_direction);
 		diffuse_level += light_diffuse;
 
 		if (light_diffuse.r > 0.0 || light_diffuse.g > 0.0 || light_diffuse.b > 0.0)
 		{
-			specular_level += specularLighting(spotLights[i], light_direction, view_direction);
+			specular_level += specularLighting(Spot_Lights[i], light_direction, view_direction);
 		}
-	}
+	}*/
 
 	vec3 ambient_level = ambient_model.rgb * mat.ambient;
 	diffuse_level *= mat.diffuse;

@@ -7,7 +7,7 @@ using namespace glm;
 class Camera
 {
 public:
-	Camera(vec3 position, quat direction, float zNear, float zfar);
+	Camera(vec3 position, quat direction, float zNear, float zFar);
 	Camera(vec3 position, vec3 rotation, float zNear, float zFar);
 
 	void setPosition(vec3 position);

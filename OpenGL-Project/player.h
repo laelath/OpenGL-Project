@@ -1,12 +1,23 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+#include "camera.h"
 
-#include <glm/glm.hpp>
-using namespace glm;
+//void computeMatrices(GLFWwindow* window);
+//mat4 getViewMatrix();
+//mat4 getProjectionMatrix();
+//vec3 getPlayerPos();
+//vec3 getPlayerViewAngles();
 
-void computeMatrices(GLFWwindow* window);
-mat4 getViewMatrix();
-mat4 getProjectionMatrix();
-vec3 getPlayerPos();
-vec3 getPlayerViewAngles();
+class Player
+{
+public:
+	Player(Camera* camera);
+
+	Camera* getCamera();
+
+	void setCamera(Camera* camera);
+	void update(double delta);
+
+private:
+	Camera* camera;
+};

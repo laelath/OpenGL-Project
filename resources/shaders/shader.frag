@@ -135,10 +135,10 @@ void main()
 		float cosTheta = clamp(dot(normal, Directional_Lights[i].direction), 0, 1);
 		float bias = clamp(10 * tan(acos(cosTheta)) / Depth_Resolution, 0.0, 0.01);
 
-		//float visibility = texture(Directional_Lights[i].depth_texture, 
-		//		vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
+		float visibility = texture(Directional_Lights[i].depth_texture, 
+				vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
 
-		float visibility;
+		/*float visibility;
 		if (i == 0)
 		{
 			visibility = texture(Directional_Lights[0].depth_texture, 
@@ -153,7 +153,7 @@ void main()
 		{
 			visibility = texture(Directional_Lights[2].depth_texture, 
 				vec3(dLightShadowCoords[i].xy, (dLightShadowCoords[i].z - bias) / dLightShadowCoords[i].w));
-		}
+		}*/
 
 		if (visibility != 0.0)
 		{

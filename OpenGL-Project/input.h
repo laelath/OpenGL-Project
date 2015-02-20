@@ -19,4 +19,4 @@ bool isButtonDown(int key);
 bool isButtonPressed(int key);
 bool isButtonReleased(int key);
 
-vec2 getMousePos();
+vec2 getMousePosition();

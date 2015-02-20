@@ -26,9 +26,9 @@ public:
 	mat4 getProjectionMatrix() const;
 	mat4 getViewProjectionMatrix() const;
 
-protected:
 	virtual void updateMatrices() = 0;
 
+protected:
 	vec3 position;
 	quat direction;
 

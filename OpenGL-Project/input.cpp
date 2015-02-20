@@ -133,7 +133,7 @@ bool isButtonReleased(int button)
 	else return true;
 }
 
-vec2 getMousePos()
+vec2 getMousePosition()
 {
 	return mousePos;
 }

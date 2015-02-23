@@ -53,7 +53,11 @@ void Player::update(double delta)
 	{
 		vec2 mousePosition = getMousePosition();
 
+<<<<<<< HEAD
+		camera->rotate(vec3(mousePos.y, mousePos.x, 0));
+=======
 		camera->rotate(vec3(0, mousePosition.x, mousePosition.y) * MOUSE_SENSITIVITY);
+>>>>>>> origin/master
 	}
 }
 

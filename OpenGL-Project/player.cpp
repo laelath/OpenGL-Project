@@ -51,12 +51,14 @@ void Player::update(double delta)
 
 	if (isMouseLocked())
 	{
-		vec2 mousePos = getMousePosition() * MOUSE_SENSITIVITY;
+		vec2 mousePosition = getMousePosition();
 
-		camera->rotate(quat(0, mousePos.x, mousePos.y, 0));
+<<<<<<< HEAD
+		camera->rotate(vec3(mousePos.y, mousePos.x, 0));
+=======
+		camera->rotate(vec3(0, mousePosition.x, mousePosition.y) * MOUSE_SENSITIVITY);
+>>>>>>> origin/master
 	}
-
-	camera->updateMatrices();
 }
 
 //float horizontalAngle = 0.0f;

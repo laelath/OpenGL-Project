@@ -19,8 +19,6 @@ using namespace glm;
 #include "scene.h"
 #include "camera.h"
 
-vec3 ambient_model = vec3(0.08f, 0.11f, 0.14f);
-
 int main()
 {
 	if (!glfwInit())
@@ -38,7 +36,8 @@ int main()
 	GLFWwindow* window;
 	window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
 
-	if (window == NULL){
+	if (window == NULL)
+	{
 		cerr << "Failed to open GLFW window." << endl;
 		glfwTerminate();
 		return -1;
@@ -58,11 +57,11 @@ int main()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glClearColor(ambient_model.r, ambient_model.g, ambient_model.b, 0.1f);
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
 	Shader depthProgram("../resources/shaders/depth.vert", "../resources/shaders/depth.frag");
-	Shader passProgram("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
+	//Shader passProgram("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
 
 	GLuint sampler;
 	glGenSamplers(1, &sampler);
@@ -89,7 +88,7 @@ int main()
 	scene.addLight(new Directional_Light(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5)));
 	scene.addLight(new Directional_Light(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5)));
 
-	Perspective_Camera camera(vec3(), vec3(), 90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
+	Perspective_Camera camera(/*vec3(), vec3(),*/ 90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
 	Player player(&camera);
 
 	double lastTime = glfwGetTime();
@@ -116,9 +115,6 @@ int main()
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		program.uniform3f(ambient_model, "ambient_model");
-		program.uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
 		scene.renderScene(&program, &camera, sampler, 0, shadow_sampler);
 

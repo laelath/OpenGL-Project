@@ -113,7 +113,7 @@ void Directional_Light::bindRenderData(const Shader* program) const
 void Directional_Light::bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const
 {
 	string name = DIRECTIONAL_LIGHT_NAME + string("[") + to_string(index) + string("]");
-	program->uniform3f((viewMatrix * vec4(direction, 0)).xyz, name + ".direction");
+	program->uniform3f((viewMatrix * vec4(direction, 0)).xyz(), name + ".direction");
 	program->uniform4f(color, name + ".color");
 
 	program->uniformMatrix4f(BIAS_MATRIX * viewProjectionMatrix, name + ".depthBiasMVP");

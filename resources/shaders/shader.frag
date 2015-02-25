@@ -179,7 +179,7 @@ void main()
 		}
 	}*/
 
-	vec3 ambient_level = ambient_model.rgb * mat.ambient;
+	vec3 ambient_level = ambient_model * mat.ambient;
 	diffuse_level *= mat.diffuse;
 
 	float transparency = mat.opacity;

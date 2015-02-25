@@ -8,8 +8,6 @@ using namespace std;
 #include <glm/glm.hpp>
 using namespace glm;
 
-//#include "light.h"
-
 class Shader
 {
 public:
@@ -27,11 +25,7 @@ public:
 	void uniform3f(vec3 vec, string name) const;
 	void uniform4f(vec4 vec, string name) const;
 	void uniformMatrix4f(mat4 mat, string name) const;
-	//void uniformLight(const Point_Light* l, string name, mat4 viewMatrix) const;
-	//void uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle) const;
 
 private:
 	GLuint id;
 };
-
-//GLuint loadShaders(string vertex_file_path, string fragment_file_path);

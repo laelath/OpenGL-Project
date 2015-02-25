@@ -36,6 +36,22 @@ struct mesh
 	unsigned int material;
 };
 
+/*class Model
+{
+public:
+	Model();
+	~Model();
+
+	void draw(const Shader* program) const;
+	void draw(const Shader* program, GLuint sampler, GLuint texture_handle) const;
+
+private:
+	GLuint vbo;
+	vector<vertex> vertices;
+	vector<material> materials;
+	vector<mesh> meshes;
+};*/
+
 struct model
 {
 	GLuint vbo;

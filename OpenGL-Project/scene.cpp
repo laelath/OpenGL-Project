@@ -3,6 +3,8 @@ using namespace std;
 
 #include "scene.h"
 
+#define AMBIENT_MODEL vec3(0.08f, 0.11f, 0.14f)
+
 Scene::Scene()
 {
 	glGenVertexArrays(1, &vao);
@@ -74,6 +76,9 @@ void Scene::renderScene(const Shader* program, const Camera* camera) const
 {
 	glUseProgram(program->getID());
 
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
+
 	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
 	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
 
@@ -92,6 +97,9 @@ void Scene::renderScene(const Shader* program, const Camera* camera) const
 void Scene::renderScene(const Shader* program, const Camera* camera, GLuint shadow_sampler) const
 {
 	glUseProgram(program->getID());
+
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 	
 	for (unsigned int i = 0; i < lights.size(); i++)
 	{
@@ -117,6 +125,9 @@ void Scene::renderScene(const Shader* program, const Camera* camera, GLuint samp
 {
 	glUseProgram(program->getID());
 
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
+
 	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
 	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
 
@@ -135,6 +146,9 @@ void Scene::renderScene(const Shader* program, const Camera* camera, GLuint samp
 void Scene::renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, GLuint shadow_sampler) const
 {
 	glUseProgram(program->getID());
+
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
 	for (unsigned int i = 0; i < lights.size(); i++)
 	{

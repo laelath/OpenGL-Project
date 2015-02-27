@@ -15,6 +15,11 @@ public:
 	//void setRotation(vec3 rotation);
 	//void setDirection(vec3 direction);
 	//void setUp(vec3 up);
+	void setRotation(quat rotation);
+	void setRotation(vec3 rotation);
+	void setPitch(float amount);
+	void setYaw(float amount);
+	void setRoll(float amount);
 
 	void setZNear(float zNear);
 	void setZFar(float zFar);
@@ -23,6 +28,7 @@ public:
 	void moveAxis(vec3 translation);
 
 	//void rotate(quat rotation);
+	void rotate(quat rotation);
 	void rotate(vec3 rotation);
 	void pitch(float amount);
 	void yaw(float amount);

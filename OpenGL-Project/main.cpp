@@ -1,13 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <string>
 using namespace std;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
 #include "input.h"
@@ -27,7 +24,7 @@ int main()
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 8);
+	glfwWindowHint(GLFW_SAMPLES, 16);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -59,9 +56,9 @@ int main()
 	glCullFace(GL_BACK);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
+	initLightRenderData();
+
 	Shader program("../resources/shaders/shader.vert", "../resources/shaders/shader.frag");
-	Shader depthProgram("../resources/shaders/depth.vert", "../resources/shaders/depth.frag");
-	//Shader passProgram("../resources/shaders/texture.vert", "../resources/shaders/texture.frag");
 
 	GLuint sampler;
 	glGenSamplers(1, &sampler);
@@ -69,17 +66,7 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 
-	GLuint shadow_sampler;
-	glGenSamplers(1, &shadow_sampler);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glSamplerParameteri(shadow_sampler, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-
 	Scene scene;
-
 	scene.addModel("../resources/models/torusball/torusball.obj");
 	scene.addModel("../resources/models/trashcan/trashbin.obj");
 	scene.addModel("../resources/models/floor/floor.obj");
@@ -88,25 +75,20 @@ int main()
 	scene.addLight(new Directional_Light(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5)));
 	scene.addLight(new Directional_Light(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5)));
 
-	Perspective_Camera camera(/*vec3(), vec3(),*/ 90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
+	Perspective_Camera camera(90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
 	Player player(&camera);
 
 	double lastTime = glfwGetTime();
 
 	while (!isKeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0)
 	{
-		//computeMatrices(window);
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
 
 		player.update(delta);
 
-		//camera.setPosition(getPlayerPos());
-		//camera.setRotation(getPlayerViewAngles());
-
-		scene.renderLights(&depthProgram);
-
+		scene.renderLights();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -116,13 +98,12 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		scene.renderScene(&program, &camera, sampler, 0, shadow_sampler);
+		scene.renderScene(&program, &camera, sampler, 0, true);
 
 		glfwSwapBuffers(window);
 		updateInput();
 	}
 
 	glfwTerminate();
-
 	return 0;
 }

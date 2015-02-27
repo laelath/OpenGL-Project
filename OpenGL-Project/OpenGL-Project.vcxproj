@@ -32,6 +32,7 @@
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\resources\shaders\depth.geom" />
     <None Include="..\resources\shaders\depth.frag" />
     <None Include="..\resources\shaders\depth.vert" />
     <None Include="..\resources\shaders\shader.frag" />

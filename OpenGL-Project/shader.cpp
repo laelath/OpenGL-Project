@@ -94,11 +94,11 @@ Shader::Shader(string vertex_file_path, string geometry_file_path, string fragme
 	if (result == GL_FALSE)
 	{
 		cerr << "Error Linking Program." << endl;
-	}
-
-	cout << endl;
-
-	glDeleteShader(vertexShaderID);
+	}								 
+									 
+	cout << endl;					 
+									 
+	glDeleteShader(vertexShaderID);	 
 	glDeleteShader(geometryShaderID);
 	glDeleteShader(fragmentShaderID);
 

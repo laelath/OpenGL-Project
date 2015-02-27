@@ -14,6 +14,10 @@ using namespace glm;
 #define DIRECTIONAL_LIGHT_NAME "Directional_Lights"
 #define SPOT_LIGHT_NAME "Spot_Lights"
 
+void initLightRenderData();
+const Shader* DepthProgram();
+const GLuint ShadowSampler();
+
 class Shadow_Light
 {
 public:
@@ -25,8 +29,8 @@ public:
 	mat4 getViewMatrix() const;
 
 	virtual void updateMatrices() = 0;
-	virtual void bindRenderData(const Shader* program) const = 0;
-	virtual void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const = 0;
+	virtual void bindRenderData() const = 0;
+	virtual void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint texture_handle) const = 0;
 
 protected:
 	GLuint framebufferID, depthTextureID;
@@ -48,14 +52,15 @@ public:
 	mat4 getProjectionMatrix(int index) const;
 
 	void updateMatrices();
-	void bindRenderData(const Shader* program) const;
-	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const;
+	void bindRenderData() const;
+	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint texture_handle) const;
 
 protected:
 	void initDepthBuffers();
 
 private:
 	mat4 projectionMatrices[6];
+	mat4 viewProjectionMatrices[6];
 };
 
 class Directional_Light : public Shadow_Light
@@ -71,8 +76,8 @@ public:
 	mat4 getViewProjectionMatrix() const;
 
 	void updateMatrices();
-	void bindRenderData(const Shader* program) const;
-	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint sampler, GLuint texture_handle) const;
+	void bindRenderData() const;
+	void bindLight(const Shader* program, unsigned int index, mat4 viewMatrix, GLuint texture_handle) const;
 
 protected:
 	void initDepthBuffers();

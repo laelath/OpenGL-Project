@@ -95,5 +95,8 @@
     <None Include="..\resources\shaders\texture.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\resources\shaders\depth.geom">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

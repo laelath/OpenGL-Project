@@ -58,6 +58,47 @@ void Camera::setPosition(vec3 position)
 	updateViewMatrix();
 }*/
 
+void Camera::setRotation(quat rotation)
+{
+	direction = normalize(rotation * vec3(0, 0, -1));
+	right = normalize(rotation * vec3(1, 0, 0));
+	up = normalize(rotation * vec3(0, 1, 0));
+}
+
+void Camera::setRotation(vec3 rotation)
+{
+	setRoll(rotation.z);
+	setPitch(rotation.x);
+	setYaw(rotation.y);
+}
+
+void Camera::setPitch(float amount)
+{
+	quat rotation = angleAxis(amount, right);
+	direction = normalize(rotation * vec3(0, 0, -1));
+	if (dot(up, cross(right, direction)) < 0)
+	{
+		up *= -1;
+	}
+	updateViewMatrix();
+}
+
+void Camera::setYaw(float amount)
+{
+	quat rotation = angleAxis(amount, up);
+	direction = normalize(rotation * vec3(0, 0, -1));
+	right = normalize(rotation * vec3(1, 0, 0));
+	updateViewMatrix();
+}
+
+void Camera::setRoll(float amount)
+{
+	quat rotation = angleAxis(amount, direction);
+	right = normalize(rotation * vec3(1, 0, 0));
+	up = normalize(rotation * vec3(0, 1, 0));
+	updateViewMatrix();
+}
+
 void Camera::setZNear(float zNear)
 {
 	this->zNear = zNear;
@@ -98,6 +139,13 @@ void Camera::rotate(vec3 rotation)
 	updateViewMatrix();
 }*/
 
+void Camera::rotate(quat rotation)
+{
+	direction = normalize(rotation * direction);
+	right = normalize(rotation * right);
+	up = normalize(rotation * up);
+}
+
 void Camera::rotate(vec3 rotation)
 {
 	roll(rotation.z);
@@ -109,6 +157,7 @@ void Camera::pitch(float amount)
 {
 	quat rotation = angleAxis(amount, right);
 	direction = normalize(rotation * direction);
+	//up = normalize(rotation * up);
 	if (dot(up, cross(right, direction)) < 0)
 	{
 		up *= -1;
@@ -176,7 +225,7 @@ mat4 Camera::getViewProjectionMatrix() const
 void Camera::updateViewMatrix()
 {
 	//viewMatrix = lookAt(position, position + (orientation * vec3(0, 0, -1)), (orientation * vec3(0, 1, 0)));
-	viewMatrix = lookAt(position, position + direction, cross(right, direction));
+	viewMatrix = lookAt(position, position + direction, up/*cross(right, direction)*/);
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 

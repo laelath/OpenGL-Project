@@ -36,31 +36,32 @@ struct mesh
 	unsigned int material;
 };
 
-/*class Model
+class Model
 {
 public:
-	Model();
-	~Model();
+	Model(string path);
 
 	void draw(const Shader* program) const;
 	void draw(const Shader* program, GLuint sampler, GLuint texture_handle) const;
 
 private:
-	GLuint vbo;
-	vector<vertex> vertices;
-	vector<material> materials;
-	vector<mesh> meshes;
-};*/
-
-struct model
-{
+	bool loadModel(string path);
+	
 	GLuint vbo;
 	vector<vertex> vertices;
 	vector<material> materials;
 	vector<mesh> meshes;
 };
 
-bool load3DFromFile(string path, model* lmodel);
+/*struct model
+{
+	GLuint vbo;
+	vector<vertex> vertices;
+	vector<material> materials;
+	vector<Model> Modeles;
+};*/
 
-void drawModel(const model* rmodel, const Shader* program);
-void drawModel(const model* rmodel, const Shader* program, GLuint sampler, GLuint texture_handle);
+//bool load3DFromFile(string path, model* lmodel);
+
+//void drawModel(const model* rmodel, const Shader* program);
+//void drawModel(const model* rmodel, const Shader* program, GLuint sampler, GLuint texture_handle);

@@ -8,12 +8,20 @@
 vector<string> loadedpaths;
 vector<GLuint> loadedIDs;
 
-GLuint decodeTexture2D()
+GLuint default_texture = 0;
+
+/*GLuint decodeTexture2D()
 {
 	return 0;
+}*/
+
+void setDefaultTexture(GLuint texID)
+{
+	default_texture = texID;
 }
 
-GLuint loadTexture2D(string filename)
+
+GLuint loadTexture(string filename)
 {
 	for (unsigned int i = 0; i < loadedpaths.size(); i++)
 	{
@@ -33,14 +41,14 @@ GLuint loadTexture2D(string filename)
 	if (format == FIF_UNKNOWN)
 	{
 		cerr << "Failed to load image: " << filename.c_str() << ". Invalid file type." << endl;
-		return false;
+		return default_texture;
 	}
 
 	if (FreeImage_FIFSupportsReading(format)) image = FreeImage_Load(format, filename.c_str());
 	if (!image)
 	{
 		cerr << "Failed to load image: " << filename.c_str() << ". Error loading image." << endl;
-		return false;
+		return default_texture;
 	}
 
 	BYTE* pixels = FreeImage_GetBits(image);

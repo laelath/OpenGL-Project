@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-#define GLM_FORCE_RADIANS
+//#define GLM_FORCE_RADIANS
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,7 +33,7 @@ void Player::setCamera(Camera* camera)
 
 void Player::update(double delta)
 {
-	if (isButtonDown(GLFW_MOUSE_BUTTON_1))
+	/*if (isButtonDown(GLFW_MOUSE_BUTTON_1))
 	{
 		setMouseLock(true);
 	}
@@ -41,18 +41,18 @@ void Player::update(double delta)
 	if (isButtonDown(GLFW_MOUSE_BUTTON_2))
 	{
 		setMouseLock(false);
-	}
+	}*/
 
-	if (isMouseLocked())
-	{
+	//if (isMouseLocked())
+	//{
 		vec2 mouseDelta = getMousePosition() * MOUSE_SENSITIVITY;
 
 		float zRotation = 0.0f;
-		if (isKeyDown(GLFW_KEY_E)) zRotation += 1.0f * float(delta);
-		if (isKeyDown(GLFW_KEY_Q)) zRotation -= 1.0f * float(delta);
+		//if (isKeyDown(GLFW_KEY_E)) zRotation += 1.0f * float(delta);
+		//if (isKeyDown(GLFW_KEY_Q)) zRotation -= 1.0f * float(delta);
 
 		camera->rotate(vec3(-mouseDelta.y, -mouseDelta.x, zRotation));
-	}
+	//}
 
 	vec3 movement = vec3();
 	if (isKeyDown(GLFW_KEY_W)) movement += vec3(0, 0, 1);

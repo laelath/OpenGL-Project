@@ -5,7 +5,8 @@ using namespace std;
 
 #include <GL/glew.h>
 
-GLuint loadTexture2D(string filename);
+void setDefaultTexture(GLuint texID);
+GLuint loadTexture(string filename);
 
 //GLuint loadGLpng(const char* file_name);
 

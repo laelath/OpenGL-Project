@@ -5,6 +5,7 @@ using namespace std;
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
 #include "input.h"
@@ -54,6 +55,7 @@ int main()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 	initLightRenderData();
@@ -65,28 +67,48 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+	
+	GLuint default_texture = loadTexture("../resources/textures/default.png");
+	if (!default_texture)
+	{
+		cerr << "Error loading default texture";
+	}
+	else
+	{
+		setDefaultTexture(default_texture);
+	}
 
 	Scene scene;
 	scene.addModel("../resources/models/torusball/torusball.obj");
 	scene.addModel("../resources/models/trashcan/trashbin.obj");
 	scene.addModel("../resources/models/floor/floor.obj");
 
+	//scene.addLight(new Point_Light(vec3(0.0, 75.0, 0.0), vec4(0.8, 0.8, 0.8, 100)));
 	scene.addLight(new Directional_Light(vec3(1.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 0.5)));
 	scene.addLight(new Directional_Light(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5)));
 	scene.addLight(new Directional_Light(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5)));
 
+	//Scene gui;
+
+
 	Perspective_Camera camera(90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
 	Player player(&camera);
 
+	int game_state = 0;
+	setMouseLock(true);
+
 	double lastTime = glfwGetTime();
 
-	while (!isKeyPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0)
+	while (game_state != -1 && glfwWindowShouldClose(window) == 0)
 	{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
 
-		player.update(delta);
+		if (game_state == 0)
+		{
+			player.update(delta);
+		}
 
 		scene.renderLights();
 
@@ -102,6 +124,20 @@ int main()
 
 		glfwSwapBuffers(window);
 		updateInput();
+
+		if (isKeyPressed(GLFW_KEY_ESCAPE))
+		{
+			if (game_state == 0)
+			{
+				game_state = 1;
+				setMouseLock(false);
+			} 
+			else if (game_state == 1)
+			{
+				game_state = 0;
+				setMouseLock(true);
+			}
+		}
 	}
 
 	glfwTerminate();

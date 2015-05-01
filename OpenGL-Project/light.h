@@ -7,7 +7,7 @@ using namespace glm;
 
 #include "shader.h"
 
-#define SHADOW_RESOLUTION 2048
+#define SHADOW_RESOLUTION 512
 #define BIAS_MATRIX mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0)
 
 #define POINT_LIGHT_NAME "Point_Lights"
@@ -26,7 +26,7 @@ public:
 	GLuint getFramebufferID() const;
 	GLuint getTextureID() const;
 
-	mat4 getViewMatrix() const;
+	//mat4 getViewMatrix() const;
 
 	virtual void updateMatrices() = 0;
 	virtual void bindRenderData() const = 0;
@@ -35,7 +35,7 @@ public:
 protected:
 	GLuint framebufferID, depthTextureID;
 
-	mat4 viewMatrix;
+	//mat4 viewMatrix;
 
 	virtual void initDepthBuffers() = 0;
 };
@@ -49,7 +49,9 @@ public:
 	Point_Light();
 	Point_Light(vec3 position, vec4 color);
 
-	mat4 getProjectionMatrix(int index) const;
+	mat4 getProjectionMatrix() const;
+	mat4 getViewMatrix(int index) const;
+	mat4 getViewProjectionMatrix(int index) const;
 
 	void updateMatrices();
 	void bindRenderData() const;
@@ -59,7 +61,8 @@ protected:
 	void initDepthBuffers();
 
 private:
-	mat4 projectionMatrices[6];
+	mat4 projectionMatrix;
+	mat4 viewMatrices[6];
 	mat4 viewProjectionMatrices[6];
 };
 
@@ -72,6 +75,7 @@ public:
 	Directional_Light();
 	Directional_Light(vec3 direction, vec4 color);
 
+	mat4 getViewMatrix() const;
 	mat4 getProjectionMatrix() const;
 	mat4 getViewProjectionMatrix() const;
 
@@ -83,6 +87,7 @@ protected:
 	void initDepthBuffers();
 
 private:
+	mat4 viewMatrix;
 	mat4 projectionMatrix;
 	mat4 viewProjectionMatrix;
 };

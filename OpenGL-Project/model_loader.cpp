@@ -196,7 +196,7 @@ bool Model::loadModel(string path)
 			
 			string texloadpath = stringpath + texname;
 			
-			texture = loadTexture2D(texloadpath.c_str());
+			texture = loadTexture(texloadpath.c_str());
 		}
 
 		material.texture = texture;

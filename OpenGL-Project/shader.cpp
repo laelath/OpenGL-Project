@@ -65,7 +65,7 @@ Shader::Shader(string vertex_file_path, string fragment_file_path)
 	glGetProgramiv(programID, GL_LINK_STATUS, &result);
 	if (result == GL_FALSE)
 	{
-		cerr << "Error Linking Program." << endl;
+		cerr << "Error Linking Program:" << endl;
 	}
 
 	cout << endl;

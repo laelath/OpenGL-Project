@@ -1,0 +1,21 @@
+images
+	background name.png
+	button bmp.png
+
+menu pause
+	render_scene true
+	image background
+	position -1 -1 1 1
+
+button settings
+	image button
+	position -0.5 0 0.5 -0.2
+	text Settings
+	function open settings
+
+button close
+	color 1 0 0
+	transparency 0.8
+	position -0.5 -0.3 0.5 -0.5
+	text Close Game
+	function game_close

@@ -47,8 +47,8 @@ void button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	mousePos.x = float(xpos);
-	mousePos.y = float(ypos);
+	mousePos.x = xpos;
+	mousePos.y = ypos;
 }
 
 void initInput(GLFWwindow* window)

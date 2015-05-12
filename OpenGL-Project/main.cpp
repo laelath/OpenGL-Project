@@ -6,6 +6,8 @@ using namespace std;
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define GLM_FORCE_RADIANS
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
@@ -17,7 +19,6 @@ using namespace glm;
 #include "model_loader.h"
 #include "image_loader.h"
 #include "scene.h"
-#include "camera.h"
 
 vec3 ambient_model = vec3(0.08f, 0.11f, 0.14f);
 
@@ -89,7 +90,7 @@ int main()
 	scene.addLight(new Directional_Light(vec3(1.0, 0.7, -0.5), vec4(0.0, 1.0, 0.0, 0.5)));
 	scene.addLight(new Directional_Light(vec3(-1.0, 1.0, 0.0), vec4(0.0, 0.0, 1.0, 0.5)));
 
-	Perspective_Camera camera(vec3(), vec3(), 90.0f, 1280.0f / 720.0f, 0.1f, 100000.0f);
+	Perspective_Camera camera(vec3(), vec3(), 90.0f, 1280.0 / 720.0, 0.1f, 100000.0f);
 	Player player(&camera);
 
 	double lastTime = glfwGetTime();

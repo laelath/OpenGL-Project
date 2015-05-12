@@ -2,7 +2,8 @@
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-using namespace glm;
+
+#include "window.h"
 
 void initInput(GLFWwindow* window);
 void updateInput();
@@ -19,4 +20,4 @@ bool isButtonDown(int key);
 bool isButtonPressed(int key);
 bool isButtonReleased(int key);
 
-vec2 getMousePosition();
+glm::vec2 getMousePosition();

@@ -24,7 +24,7 @@ GLuint loadShader(string file_path, GLuint shader)
 		return 0;
 	}
 
-	cout << "Compiling shader : " << file_path << endl;
+	cout << "Compiling shader: " << file_path << endl;
 	char const* sourcePointer = shaderCode.c_str();
 	glShaderSource(shaderID, 1, &sourcePointer, NULL);
 	glCompileShader(shaderID);
@@ -150,22 +150,3 @@ void Shader::uniformMatrix4f(mat4 mat, string name) const
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
 }
-
-/*void Shader::uniformLight(const Point_Light* l, string name, mat4 viewMatrix) const
-{
-	this->uniform3f((viewMatrix * vec4(l->position, 1)).xyz, name + ".position");
-	this->uniform4f(l->color, name + ".color");
-}
-
-void Shader::uniformLight(const Directional_Light* l, string name, mat4 viewMatrix, GLuint sampler, unsigned int texture_handle) const
-{
-	this->uniform3f((viewMatrix * vec4(l->direction, 0)).xyz, name + ".direction");
-	this->uniform4f(l->color, name + ".color");
-
-	uniformMatrix4f(BIAS_MATRIX * l->getViewProjectionMatrix(), name + ".depthBiasMVP");
-
-	glActiveTexture(GL_TEXTURE0 + texture_handle);
-	glBindSampler(texture_handle, sampler);
-	glBindTexture(GL_TEXTURE_2D, l->getTextureID());
-	this->uniform1i(texture_handle, name + ".depth_texture");
-}*/

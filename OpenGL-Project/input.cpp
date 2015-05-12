@@ -1,8 +1,9 @@
+#include "input.h"
+
 #include <iostream>
 #include <vector>
 using namespace std;
-
-#include "input.h"
+using namespace glm;
 
 GLFWwindow* currentWindow;
 

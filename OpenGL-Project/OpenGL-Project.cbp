@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="OpenGLProject" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="OpenGL-Project" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DGLEW_STATIC" />
+					<Add directory="../include" />
+				</Compiler>
+				<Linker>
+					<Add library="glfw3.lib" />
+					<Add library="opengl32.lib" />
+					<Add library="glew32.lib" />
+					<Add library="assimp.lib" />
+					<Add library="FreeImage.lib" />
+					<Add directory="../lib" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="OpenGL-Project" prefix_auto="1" extension_auto="1" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-D_LIB" />
+					<Add directory="../include" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="../resources/shaders/depth.frag" />
+		<Unit filename="../resources/shaders/depth.geom" />
+		<Unit filename="../resources/shaders/depth.vert" />
+		<Unit filename="../resources/shaders/shader.frag" />
+		<Unit filename="../resources/shaders/shader.vert" />
+		<Unit filename="../resources/shaders/simple.frag" />
+		<Unit filename="../resources/shaders/texture.frag" />
+		<Unit filename="../resources/shaders/texture.vert" />
+		<Unit filename="camera.cpp" />
+		<Unit filename="camera.h" />
+		<Unit filename="console.cpp" />
+		<Unit filename="console.h" />
+		<Unit filename="console_commands.cpp" />
+		<Unit filename="console_commands.h" />
+		<Unit filename="image_loader.cpp" />
+		<Unit filename="image_loader.h" />
+		<Unit filename="input.cpp" />
+		<Unit filename="input.h" />
+		<Unit filename="light.cpp" />
+		<Unit filename="light.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="menu.cpp" />
+		<Unit filename="menu.h" />
+		<Unit filename="model_loader.cpp" />
+		<Unit filename="model_loader.h" />
+		<Unit filename="player.cpp" />
+		<Unit filename="player.h" />
+		<Unit filename="scene.cpp" />
+		<Unit filename="scene.h" />
+		<Unit filename="shader.cpp" />
+		<Unit filename="shader.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -15,11 +15,21 @@ GLuint default_texture = 0;
 	return 0;
 }*/
 
-void setDefaultTexture(GLuint texID)
+bool loadDefaultTexture(string path)
 {
-	default_texture = texID;
+	GLuint texID = loadTexture(path);
+	if (!texID)
+	{
+		cerr << "Error loading default texture";
+		return false;
+	}
+	else
+	{
+		default_texture = texID;
+		cout << endl;
+		return true;
+	}
 }
-
 
 GLuint loadTexture(string filename)
 {
@@ -80,33 +90,3 @@ GLuint loadTexture(string filename)
 
 	return textureID;
 }
-
-
-/*GLuint decodeGLpng(std::vector<unsigned char> png_data)
-{
-	std::vector<unsigned char> img;
-	unsigned width, height;
-
-	unsigned error = lodepng::decode(img, width, height, png_data);
-
-	if (error) std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
-
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, width, height, GL_RGBA, GL_UNSIGNED_BYTE, &img[0]);
-
-	return textureID;
-}
-
-GLuint loadGLpng(const char* filename)
-{
-
-	std::vector<unsigned char> data;
-	lodepng::load_file(data, filename);
-
-	GLuint textureID = decodeGLpng(data);
-
-	return textureID;
-}*/

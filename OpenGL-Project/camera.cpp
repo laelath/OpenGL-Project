@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-#define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 

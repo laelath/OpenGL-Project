@@ -5,7 +5,6 @@ using namespace std;
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
 #include "input.h"
@@ -16,14 +15,13 @@ using namespace glm;
 #include "image_loader.h"
 #include "scene.h"
 #include "camera.h"
+#include "console.h"
 
 int main()
 {
-	if (!glfwInit())
-	{
-		cerr << "Failed to initialize GLFW." << endl;
-		return -1;
-	}
+	initConsole();
+
+	if (!glfwInit()) submit("exit Failed to initialize GLFW.");
 
 	glfwWindowHint(GLFW_SAMPLES, 16);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -34,21 +32,14 @@ int main()
 	GLFWwindow* window;
 	window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
 
-	if (window == NULL)
-	{
-		cerr << "Failed to open GLFW window." << endl;
-		glfwTerminate();
-		return -1;
-	}
+	if (window == NULL) submit("exit Failed to open GLFW window.");
 
 	glfwMakeContextCurrent(window);
 	initInput(window);
 	glewExperimental = true;
 
-	if (glewInit() != GLEW_OK) {
-		cerr << "Failed to initialize GLEW." << endl;
-		return -1;
-	}
+	if (glewInit() != GLEW_OK) submit("exit Failed to initialize GLEW.");
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
@@ -68,14 +59,10 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 	
-	GLuint default_texture = loadTexture("../resources/textures/default.png");
-	if (!default_texture)
+	if (!loadDefaultTexture("../resources/textures/default.png"))
 	{
-		cerr << "Error loading default texture";
-	}
-	else
-	{
-		setDefaultTexture(default_texture);
+		cout << "Failed to load default texture.";
+		abort();
 	}
 
 	Scene scene;
@@ -99,11 +86,13 @@ int main()
 
 	double lastTime = glfwGetTime();
 
-	while (game_state != -1 && glfwWindowShouldClose(window) == 0)
+	while (game_state != -1 && !glfwWindowShouldClose(window))
 	{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
 		lastTime = currentTime;
+
+		execute_queue();
 
 		if (game_state == 0)
 		{
@@ -139,7 +128,4 @@ int main()
 			}
 		}
 	}
-
-	glfwTerminate();
-	return 0;
 }

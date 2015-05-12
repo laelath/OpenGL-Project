@@ -3,6 +3,8 @@ using namespace std;
 
 #include "scene.h"
 
+#define AMBIENT_MODEL vec3(0.08f, 0.11f, 0.14f)
+
 Scene::Scene()
 {
 	glGenVertexArrays(1, &vao);
@@ -10,7 +12,7 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	for (model* m : models)
+	for (Model* m : models)
 	{
 		delete(m);
 	}
@@ -25,14 +27,11 @@ Scene::~Scene()
 
 void Scene::addModel(string path)
 {
-	model* nm = new model;
-	if (load3DFromFile(path, nm))
-	{
-		models.push_back(nm);
-	}
+	Model* nm = new Model(path);
+	models.push_back(nm);
 }
 
-void Scene::addModel(model* m)
+void Scene::addModel(Model* m)
 {
 	models.push_back(m);
 }
@@ -42,25 +41,23 @@ void Scene::addLight(Shadow_Light* l)
 	lights.push_back(l);
 }
 
-void Scene::renderLights(const Shader* depth_program)
+void Scene::renderLights()
 {
+	glUseProgram(DepthProgram()->getID());
+	glViewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION);
+
 	for (Shadow_Light* l : lights)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, l->getFramebufferID());
-
-		glViewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION);
-
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(depth_program->getID());
-
-		l->bindRenderData(depth_program);
+		l->bindRenderData();
 
 		glBindVertexArray(vao);
 
-		for (model* m : models)
+		for (Model* m : models)
 		{
-			drawModel(m, depth_program);
+			m->draw(DepthProgram());
 		}
 
 		glBindVertexArray(0);
@@ -70,18 +67,51 @@ void Scene::renderLights(const Shader* depth_program)
 	glUseProgram(0);
 }
 
-void Scene::renderScene(const Shader* program, const Camera* camera) const
+/*void Scene::renderScene(const Shader* program, const Camera* camera) const
 {
 	glUseProgram(program->getID());
+
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
 	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
 	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
 
 	glBindVertexArray(vao);
 
-	for (model* m : models)
+	for (Model* m : models)
 	{
-		drawModel(m, program);
+		m->draw(program);
+	}
+
+	glBindVertexArray(0);
+
+	glUseProgram(0);
+}*/
+
+void Scene::renderScene(const Shader* program, const Camera* camera, bool lighting) const
+{
+	glUseProgram(program->getID());
+
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
+
+	if (lighting)
+	{
+		for (unsigned int i = 0; i < lights.size(); i++)
+		{
+			lights[i]->bindLight(program, i, camera->getViewMatrix(), i);
+		}
+	}
+
+	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
+	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
+
+	glBindVertexArray(vao);
+
+	for (Model* m : models)
+	{
+		m->draw(program);
 	}
 
 	glBindVertexArray(0);
@@ -89,56 +119,41 @@ void Scene::renderScene(const Shader* program, const Camera* camera) const
 	glUseProgram(0);
 }
 
-void Scene::renderScene(const Shader* program, const Camera* camera, GLuint shadow_sampler) const
+/*void Scene::renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle) const
 {
 	glUseProgram(program->getID());
-	
-	for (unsigned int i = 0; i < lights.size(); i++)
-	{
-		lights[i]->bindLight(program, i, camera->getViewMatrix(), shadow_sampler, i);
-	}
+
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
 	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
 	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
 
 	glBindVertexArray(vao);
 
-	for (model* m : models)
+	for (Model* m : models)
 	{
-		drawModel(m, program);
+		m->draw(program, sampler, texture_handle);
 	}
 
 	glBindVertexArray(0);
 
 	glUseProgram(0);
-}
+}*/
 
-void Scene::renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle) const
+void Scene::renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, bool lighting) const
 {
 	glUseProgram(program->getID());
 
-	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
-	program->uniformMatrix4f(camera->getViewMatrix(), "modelView");
+	program->uniform3f(AMBIENT_MODEL, "ambient_model");
+	program->uniform1i(SHADOW_RESOLUTION, "depth_resolution");
 
-	glBindVertexArray(vao);
-
-	for (model* m : models)
+	if (lighting)
 	{
-		drawModel(m, program, sampler, texture_handle);
-	}
-
-	glBindVertexArray(0);
-
-	glUseProgram(0);
-}
-
-void Scene::renderScene(const Shader* program, const Camera* camera, GLuint sampler, GLuint texture_handle, GLuint shadow_sampler) const
-{
-	glUseProgram(program->getID());
-
-	for (unsigned int i = 0; i < lights.size(); i++)
-	{
-		lights[i]->bindLight(program, i, camera->getViewMatrix(), shadow_sampler, texture_handle + i + 1);
+		for (unsigned int i = 0; i < lights.size(); i++)
+		{
+			lights[i]->bindLight(program, i, camera->getViewMatrix(), texture_handle + i + 1);
+		}
 	}
 
 	program->uniformMatrix4f(camera->getViewProjectionMatrix(), "modelViewProjection");
@@ -146,9 +161,9 @@ void Scene::renderScene(const Shader* program, const Camera* camera, GLuint samp
 
 	glBindVertexArray(vao);
 
-	for (model* m : models)
+	for (Model* m : models)
 	{
-		drawModel(m, program, sampler, texture_handle);
+		m->draw(program, sampler, texture_handle);
 	}
 
 	glBindVertexArray(0);

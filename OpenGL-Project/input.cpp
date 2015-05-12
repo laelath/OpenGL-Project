@@ -1,8 +1,9 @@
+#include "input.h"
+
 #include <iostream>
 #include <vector>
 using namespace std;
-
-#include "input.h"
+using namespace glm;
 
 GLFWwindow* currentWindow;
 
@@ -13,6 +14,7 @@ vector<int> keysReleased;
 vector<int> buttonsDown;
 vector<int> buttonsPressed;
 vector<int> buttonsReleased;
+
 
 vec2 mousePos;
 bool locked;
@@ -47,8 +49,8 @@ void button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	mousePos.x = xpos;
-	mousePos.y = ypos;
+	mousePos.x = float(xpos);
+	mousePos.y = float(ypos);
 }
 
 void initInput(GLFWwindow* window)

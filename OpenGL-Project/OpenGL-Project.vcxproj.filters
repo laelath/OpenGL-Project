@@ -43,6 +43,9 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="image_loader.cpp">
@@ -72,6 +75,9 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\resources\shaders\depth.frag">
@@ -93,6 +99,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\resources\shaders\texture.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\depth.geom">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

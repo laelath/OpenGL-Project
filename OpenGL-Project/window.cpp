@@ -1,46 +1,75 @@
 #include "window.h"
+#include "input.h"
+#include "console.h"
 
 using namespace std;
 using namespace glm;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+#define WINDOW_SAMPLES 16
+
+void window_focus_callback(GLFWwindow* window, int focused)
 {
-	glViewport(0, 0, width, height);
+	if (focused == GL_TRUE)
+	{
+		bindWindow(window);
+	}
 }
 
-Window::Window()
+Window::Window(int width, int height, string title, GLFWmonitor* monitor, GLFWwindow* share)
 {
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwWindowHint(GLFW_SAMPLES, WINDOW_SAMPLES);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(width, height, title.c_str(), monitor, share);
+
+	if (this->window == NULL) submit("print Error creating GLFW window.");
+
+	glfwSetWindowFocusCallback(window, window_focus_callback);
 }
 
 Window::~Window()
 {
-	glfwDestroyWindow(window);
+	close();
 }
 
 void Window::update()
 {
+
 	glfwSwapBuffers(window);
-	glfwPollEvents();
 }
 
-ivec2 Window::getSize() const
+ivec2 Window::size() const
 {
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	return ivec2(width, height);
 }
 
-ivec2 Window::getFramebufferSize() const
+ivec2 Window::framebufferSize() const
 {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	return ivec2(width, height);
 }
 
-GLFWwindow* Window::getWindow() const
+ivec2 Window::position() const
+{
+	int xpos, ypos;
+	glfwGetWindowPos(window, &xpos, &ypos);
+	return ivec2(xpos, ypos);
+}
+
+GLFWwindow* Window::glfwWindow() const
 {
 	return window;
+}
+
+int Window::shouldClose() const
+{
+	return glfwWindowShouldClose(window);
 }
 
 void Window::setSize(unsigned int width, unsigned int height)
@@ -48,9 +77,24 @@ void Window::setSize(unsigned int width, unsigned int height)
 	glfwSetWindowSize(window, width, height);
 }
 
+void Window::setPos(int xpos, int ypos)
+{
+	glfwSetWindowPos(window, xpos, ypos);
+}
+
 void Window::setTitle(string title)
 {
 	glfwSetWindowTitle(window, title.c_str());
+}
+
+void Window::setShouldClose(bool should_close)
+{
+	glfwSetWindowShouldClose(window, should_close);
+}
+
+void Window::close()
+{
+	glfwDestroyWindow(window);
 }
 
 void Window::makeContextCurrent()

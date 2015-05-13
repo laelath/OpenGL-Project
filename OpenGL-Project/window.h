@@ -8,19 +8,22 @@
 class Window
 {
 public:
-	Window();
+	Window(int width, int height, std::string title, GLFWmonitor* monitor, GLFWwindow* share);
 	~Window();
 
 	void update();
 
-	glm::ivec2 getSize() const;
-	glm::ivec2 getFramebufferSize() const;
-	glm::ivec2 getPos() const;
-	GLFWwindow* getWindow() const;
+	glm::ivec2 size() const;
+	glm::ivec2 framebufferSize() const;
+	glm::ivec2 position() const;
+	GLFWwindow* glfwWindow() const;
+	int shouldClose() const;
 	
 	void setSize(unsigned int width, unsigned int height);
 	void setPos(int x, int y);
 	void setTitle(std::string title);
+	void setShouldClose(bool close);
+	void close();
 
 	void makeContextCurrent();
 

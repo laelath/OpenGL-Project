@@ -1,19 +1,16 @@
-#include <stdlib.h>
-
 #include <iostream>
 #include <string>
 #include <map>
 using namespace std;
 
-#include <GLFW/glfw3.h>
 #include "console_commands.h"
 #include "console.h"
+#include "window.h"
 
 void exit(string content)
 {
 	cout << content << endl;
-
-	//glfwSetWindowShouldClose(window, true);
+	
 }
 
 void create(string content)

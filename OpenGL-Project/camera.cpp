@@ -185,6 +185,21 @@ vec3 Camera::getPosition() const
 	return position;
 }
 
+vec3 Camera::getDirection() const
+{
+	return direction;
+}
+
+vec3 Camera::getRight() const
+{
+	return right;
+}
+
+vec3 Camera::getUp() const
+{
+	return up;
+}
+
 /*quat Camera::getOrientation() const
 {
 	return orientation;

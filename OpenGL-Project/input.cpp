@@ -5,7 +5,7 @@
 using namespace std;
 using namespace glm;
 
-GLFWwindow* currentWindow;
+GLFWwindow* focusedWindow;
 
 vector<int> keysDown;
 vector<int> keysPressed;
@@ -53,12 +53,12 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 	mousePos.y = float(ypos);
 }
 
-void initInput(GLFWwindow* window)
+void bindWindow(GLFWwindow* window)
 {
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, button_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
-	currentWindow = window;
+	focusedWindow = window;
 }
 
 void updateInput()
@@ -70,7 +70,7 @@ void updateInput()
 
 	if (locked)
 	{
-		glfwSetCursorPos(currentWindow, 0, 0);
+		glfwSetCursorPos(focusedWindow, 0, 0);
 		mousePos.x = 0.0;
 		mousePos.y = 0.0;
 	}
@@ -83,14 +83,14 @@ void setMouseLock(bool mouseLock)
 	locked = mouseLock;
 	if (mouseLock)
 	{
-		glfwSetInputMode(currentWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPos(currentWindow, 0, 0);
+		glfwSetInputMode(focusedWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPos(focusedWindow, 0, 0);
 		mousePos.x = 0.0;
 		mousePos.y = 0.0;
 	}
 	else
 	{
-		glfwSetInputMode(currentWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(focusedWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 }
 

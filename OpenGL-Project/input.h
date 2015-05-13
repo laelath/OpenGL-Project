@@ -3,9 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "window.h"
-
-void initInput(GLFWwindow* window);
+void bindWindow(GLFWwindow* window);
 void updateInput();
 
 void setMouseLock(bool mouseLock);

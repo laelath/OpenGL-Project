@@ -673,7 +673,6 @@
 
 // Not standard
 //#define GLM_HAS_ANONYMOUS_UNION (GLM_LANG & GLM_LANG_CXXMS_FLAG)
-#define GLM_HAS_ANONYMOUS_UNION (GLM_LANG & GLM_LANG_CXXMS_FLAG) && !(GLM_COMPILER & GLM_COMPILER_VC)
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Platform 

@@ -16,6 +16,7 @@ using namespace glm;
 #include "scene.h"
 #include "camera.h"
 #include "console.h"
+#include "window.h"
 
 int main()
 {
@@ -23,19 +24,17 @@ int main()
 
 	if (!glfwInit()) submit("exit Failed to initialize GLFW.");
 
-	glfwWindowHint(GLFW_SAMPLES, 16);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	Window window(1280, 720, "C++ OpenGL", NULL, NULL);
+	window.makeContextCurrent();
+	bindWindow(window.glfwWindow());
 
-	GLFWwindow* window;
-	window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
+	//GLFWwindow* window;
+	//window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
 
-	if (window == NULL) submit("exit Failed to open GLFW window.");
+	//if (window == NULL) submit("exit Failed to open GLFW window.");
 
-	glfwMakeContextCurrent(window);
-	initInput(window);
+	//glfwMakeContextCurrent(window);
+	//initInput(window);
 	glewExperimental = true;
 
 	if (glewInit() != GLEW_OK) submit("exit Failed to initialize GLEW.");
@@ -86,7 +85,7 @@ int main()
 
 	double lastTime = glfwGetTime();
 
-	while (game_state != -1 && !glfwWindowShouldClose(window))
+	while (game_state != -1 && !window.shouldClose())
 	{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;
@@ -104,14 +103,15 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(window.glfwWindow(), &width, &height);
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		scene.renderScene(&program, &camera, sampler, 0, true);
 
-		glfwSwapBuffers(window);
+		window.update();
+
 		updateInput();
 
 		if (isKeyPressed(GLFW_KEY_ESCAPE))
@@ -128,4 +128,5 @@ int main()
 			}
 		}
 	}
+	glfwTerminate();
 }

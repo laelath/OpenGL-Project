@@ -17,7 +17,7 @@ public:
 	glm::ivec2 framebufferSize() const;
 	glm::ivec2 position() const;
 	GLFWwindow* glfwWindow() const;
-	int shouldClose() const;
+	int closeRequested() const;
 	
 	void setSize(unsigned int width, unsigned int height);
 	void setPos(int x, int y);

@@ -22,22 +22,14 @@ int main()
 {
 	initConsole();
 
-	if (!glfwInit()) submit("exit Failed to initialize GLFW.");
+	if (!glfwInit()) submit("imdt abort Failed to initialize GLFW.");
 
 	Window window(1280, 720, "C++ OpenGL", NULL, NULL);
 	window.makeContextCurrent();
 	bindWindow(window.glfwWindow());
 
-	//GLFWwindow* window;
-	//window = glfwCreateWindow(1280, 720, "C++ OpenGL", NULL, NULL);
-
-	//if (window == NULL) submit("exit Failed to open GLFW window.");
-
-	//glfwMakeContextCurrent(window);
-	//initInput(window);
 	glewExperimental = true;
-
-	if (glewInit() != GLEW_OK) submit("exit Failed to initialize GLEW.");
+	if (glewInit() != GLEW_OK) submit("imdt abort Failed to initialize GLEW.");
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -58,11 +50,7 @@ int main()
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameterf(sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 	
-	if (!loadDefaultTexture("../resources/textures/default.png"))
-	{
-		cout << "Failed to load default texture.";
-		abort();
-	}
+	if (!loadDefaultTexture("../resources/textures/default.png")) submit("imdt abort failed to load default texture.");
 
 	Scene scene;
 	scene.addModel("../resources/models/torusball/torusball.obj");
@@ -85,7 +73,7 @@ int main()
 
 	double lastTime = glfwGetTime();
 
-	while (game_state != -1 && !window.shouldClose())
+	while (game_state != -1 && !isExitRequested())
 	{
 		double currentTime = glfwGetTime();
 		double delta = currentTime - lastTime;

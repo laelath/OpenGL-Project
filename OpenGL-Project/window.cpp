@@ -15,6 +15,11 @@ void window_focus_callback(GLFWwindow* window, int focused)
 	}
 }
 
+void window_close_callback(GLFWwindow* window)
+{
+	submit("exit Window close requested.");
+}
+
 Window::Window(int width, int height, string title, GLFWmonitor* monitor, GLFWwindow* share)
 {
 	glfwWindowHint(GLFW_SAMPLES, WINDOW_SAMPLES);
@@ -28,6 +33,7 @@ Window::Window(int width, int height, string title, GLFWmonitor* monitor, GLFWwi
 	if (this->window == NULL) submit("print Error creating GLFW window.");
 
 	glfwSetWindowFocusCallback(window, window_focus_callback);
+	glfwSetWindowCloseCallback(window, window_close_callback);
 }
 
 Window::~Window()
@@ -67,7 +73,7 @@ GLFWwindow* Window::glfwWindow() const
 	return window;
 }
 
-int Window::shouldClose() const
+int Window::closeRequested() const
 {
 	return glfwWindowShouldClose(window);
 }

@@ -11,6 +11,7 @@ using namespace std;
 
 map<string, void(*)(string)> functions;
 vector<pair<void(*)(string), string>> queue;
+bool exit_requested;
 mutex queue_mutex;
 
 thread* console_thread;
@@ -23,15 +24,27 @@ void addCommand(string name, void function(string))
 		cerr << "Tried to add console function that was already defined: " << name << endl;
 }
 
-void submit(string submition)
+void submit(string submission)
 {
-	string command = submition.substr(0, submition.find(" "));
-	string content = submition.substr(submition.find(" ") + 1, submition.length() - command.length() - 1);
+	string command = getStringCommand(submission);
+	string content = getStringContent(submission);
+
+	bool immediate = command == "imdt";
+	if (immediate)
+	{
+		command = getStringCommand(content);
+		content = getStringContent(content);
+	}
 
 	if (functions.find(command) != functions.end())
-		queue.push_back(make_pair(functions[command], content)); //functions[command](content);
+	{
+		if (immediate)
+			functions[command](content);
+		else
+			queue.push_back(make_pair(functions[command], content));
+	}
 	else
-		cerr << "Unknown command, use \"help\" to view commands." << endl;
+		cerr << "Unknown command, use \"help\" to view availible commands." << endl;
 }
 
 void execute_queue()
@@ -45,38 +58,48 @@ void execute_queue()
 	queue_mutex.unlock();
 }
 
+bool isExitRequested()
+{
+	return exit_requested;
+}
+
 void help(string content)
 {
 	int i = 0;
 	for (pair<string, void(*)(string)> function : functions)
 	{
-		if (i % 2 == 0)
-			cout << function.first << "\t";
-		else
+		if (i % 3 == 2)
 			cout << function.first << endl;
+		else
+			cout << function.first << "\t";
 		i++;
 	}
 	cout << endl;
 }
 
+void exit(string content)
+{
+	cout << content;
+	exit_requested = true;
+}
+
 void console()
 {
-	string submition;
+	string submission;
 	while (true)
 	{
-		cin >> submition;
+		cin >> submission;
 
 		queue_mutex.lock();
-		submit(submition);
+		submit(submission);
 		queue_mutex.unlock();
 	}
 }
 
-//thread console_thread(console);
-
 void initConsole()
 {
 	addCommand("help", help);
+	addCommand("exit", exit);
 	addDefaultCommands();
 
 	console_thread = new thread(console);

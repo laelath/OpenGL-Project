@@ -4,5 +4,7 @@
 
 void addCommand(std::string name, void function(std::string));
 void initConsole();
-void submit(std::string submition);
+void submit(std::string submission);
+void submitImmediate(std::string submission);
 void execute_queue();
+bool isExitRequested();

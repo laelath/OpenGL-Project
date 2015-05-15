@@ -14,6 +14,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="console_commands.h" />
+    <ClInclude Include="engine.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="player.h" />
@@ -28,6 +29,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="console_commands.cpp" />
+    <ClCompile Include="engine.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="player.cpp" />

@@ -8,20 +8,24 @@ using namespace std;
 using namespace glm;
 
 #include "input.h"
-#include "light.h"
-#include "shader.h"
+//#include "light.h"
+//#include "shader.h"
 #include "player.h"
-#include "model_loader.h"
-#include "image_loader.h"
-#include "scene.h"
-#include "camera.h"
-#include "console.h"
-#include "window.h"
+//#include "model_loader.h"
+//#include "image_loader.h"
+//#include "scene.h"
+//#include "camera.h"
+//#include "console.h"
+//#include "window.h"
+#include "engine.h"
 
 int main()
 {
 	initConsole();
 
+	initGL(1280, 720, "C++ OpenGL", false);
+
+	/*
 	if (!glfwInit()) submit("imdt abort Failed to initialize GLFW.");
 
 	Window window(1280, 720, "C++ OpenGL", NULL, NULL);
@@ -39,6 +43,7 @@ int main()
 	glCullFace(GL_BACK);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	*/
 
 	initLightRenderData();
 

@@ -5,10 +5,21 @@
 #include "shader.h"
 #include "camera.h"
 #include "window.h"
+#include "input.h"
 #include "image_loader.h"
 #include "model_loader.h"
 
-void initGL();
-void initEngine(int width, int height, string name, bool fullscreen);
+struct render_object
+{
+	Scene* scene;
+	Shader* shader;
+	Camera* camera;
+	bool textured;
+	bool lighting;
+	bool clear_depth_buffer;
+};
 
-void addShader(Shader* shader);
+void initGL(int width, int height, string name, bool fullscreen);
+void initEngine();
+
+void addShader(string name, Shader* shader);

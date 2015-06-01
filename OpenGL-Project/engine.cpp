@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <map>
 #include <string>
 using namespace std;
@@ -16,8 +17,13 @@ map<string, Shader*> shaders;
 map<string, Camera*> cameras;
 map<string, Window*> windows;
 
+vector<render_object> renderObjects;
+//map<string, GLuint> samplers;
+
 void initEngine()
 {
+	bindWindow(windows["default"]->glfwWindow());
+
 	initLightRenderData();
 
 	glGenSamplers(1, &sampler);
@@ -58,10 +64,55 @@ void initGL(int width, int height, string name, bool fullscreen)
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
+void setRenderObject(string scene, string shader, string camera, bool textured, bool lighting, bool clear_depth_buffer)
+{
+	render_object renderObject;
+	renderObject.scene = scenes[scene];
+	renderObject.shader = shaders[shader];
+	renderObject.camera = cameras[camera];
+	renderObject.textured = textured;
+	renderObject.lighting = lighting;
+	renderObject.clear_depth_buffer = clear_depth_buffer;
+	
+	renderObjects.push_back(renderObject);
+}
+
 void terminateEngine()
 {
 	for (pair<string, Scene*> scene : scenes) delete(scene.second);
 	for (pair<string, Shader*> shader : shaders) delete(shader.second);
 	for (pair<string, Camera*> camera : cameras) delete(camera.second);
 	for (pair<string, Window*> window : windows) delete(window.second);
+}
+
+void addScene(string name, Scene* scene)
+{
+	scenes[name] = scene;
+}
+
+void addShader(string name, Shader* shader)
+{
+	shaders[name] = shader;
+}
+
+void addCamera(string name, Camera* camera)
+{
+	cameras[name] = camera;
+}
+
+void addWindow(string name, Window* window)
+{
+	windows[name] = window;
+}
+
+int main()
+{
+	initConsole();
+	initGL(1280, 720, "C++ OpenGL", false);
+	initEngine();
+
+	while (!windows["default"]->closeRequested())
+	{
+
+	}
 }

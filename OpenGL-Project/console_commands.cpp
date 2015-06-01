@@ -25,9 +25,7 @@ void abort(string content)
 
 void create(string content)
 {
-	vector<string> commands = split(content);
-	//string object = getStringCommand(content);
-	//vector<string> params = split(getStringContent(content));
+	vector<string> commands = split(content, ' ');
 	
 	if (commands[0] == "scene")
 	{
@@ -35,10 +33,10 @@ void create(string content)
 	}
 	else if (commands[0] == "shader")
 	{
-		if (commands.size() == 3)
-			addShader(new Shader(commands[1], commands[2]));
-		else if (commands.size() == 4)
-			addShader(new Shader(commands[1], commands[2], commands[3]));
+		if (commands.size() == 4)
+			addShader(commands[1], new Shader(commands[2], commands[3]));
+		else if (commands.size() == 5)
+			addShader(commands[1], new Shader(commands[2], commands[3], commands[4]));
 		else
 			cerr << "Call to load shader had incorrect number of arguments." << endl;
 	}
@@ -48,10 +46,16 @@ void create(string content)
 	}
 }
 
+void set(string content)
+{
+
+}
+
 void addDefaultCommands()
 {
 	addCommand("abort", abort);
 	addCommand("create", create);
+	addCommand("set", set);
 }
 
 string getStringCommand(string str)
